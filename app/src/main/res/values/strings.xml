@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Poll</string>
+    <string name="emailPlaceholder">email</string>
+    <string name="typeQuestion">Type your yes/no question here</string>
+    <string name="passwordPlaceholder">password</string>
+    <string name="submitQuestionButton">Submit</string>
+    <string name="settingsButton">Settings</string>
+    <string name="aboutButton">About</string>
+    <string name="signInButtonName">Sign In</string>
+    <string name="signUpButtonName">Sign Up</string>
+    <string name="LogoutButtonMenu">Log out</string>
+    <string name="yesButton">Yes</string>
+    <string name="noButton">No</string>
+    <string name="homeButtonName">Home</string>
+    <string name="searchButtonName">Search</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="ThreeWords">Опиши меня в трех словах</string>
+    <string name="hint1">Первое слово..</string>
+    <string name="hint2">Второе слово..</string>
+    <string name="hint3">Третье слово..</string>
+    <string name="saveButton">Сохранить</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
