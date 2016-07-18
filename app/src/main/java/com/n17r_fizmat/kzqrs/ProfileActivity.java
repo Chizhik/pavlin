@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Bitmap bm;
     private View header;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+// checking git
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (b != null) {
             // TODO change hostUser
             String q = b.getString("ParseUserId");
-            if (!q.matches("")) {
+            if (q != null && !q.matches("")) {
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
                 query.whereEqualTo("objectId", q);
                 query.findInBackground(new FindCallback<ParseObject>() {
