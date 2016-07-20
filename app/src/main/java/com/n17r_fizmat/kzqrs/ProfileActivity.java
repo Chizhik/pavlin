@@ -43,7 +43,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home);
+        setContentView(R.layout.activity_profile);
+
         Bundle b = getIntent().getExtras();
         if (b != null) {
             // TODO change hostUser
@@ -72,23 +73,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-
-        Log.d("ParseUser", "hostUser: " + hostUser.getObjectId());
-        Log.d("ParseUser", "currentUser: " + currentUser.getObjectId());
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_profile);
 //        header = createHeader();
         swipeRefreshLayout.setOnRefreshListener(this);
 
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (hostUser != currentUser) {
-//            mainAdapter = new OpinionParseAdapter(this, hostUser);
-//            listView.setAdapter(mainAdapter);
-//        }
-//    }
 
     private View createHeader() {
         View v = getLayoutInflater().inflate(R.layout.header, null);
@@ -122,10 +112,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.profileImageHome:
-                Intent intentHome = new Intent(this, SettingsActivity.class);
-                startActivity(intentHome);
-                break;
             case R.id.saveButton:
                 String f = first.getText().toString();
                 String s = second.getText().toString();
@@ -146,8 +132,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     second.clearFocus();
                     third.setText("");
                     third.clearFocus();
-                    onPause();
-                    onResume();
+                    mainAdapter = new OpinionParseAdapter(this, hostUser);
+                    listView.setAdapter(mainAdapter);
                 }
                 break;
         }
