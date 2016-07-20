@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -48,33 +49,46 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             // TODO change hostUser
             String q = b.getString("ParseUserId");
             if (q != null && !q.matches("")) {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+                ParseQuery<ParseUser> query = ParseUser.getQuery();
                 query.whereEqualTo("objectId", q);
-                query.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
+                query.getInBackground(q, new GetCallback<ParseUser>() {
+                    public void done(final ParseUser user, ParseException e) {
                         if (e == null) {
-                            hostUser = (ParseUser) objects.get(0);
+                            listView = (ListView) findViewById(R.id.lvMain);
+                            hostUser = user;
+                            header = createHeader();
+                            listView.addHeaderView(header);
+                            mainAdapter = new OpinionParseAdapter(ProfileActivity.this, hostUser);
+                            listView.setAdapter(mainAdapter);
+                            Log.d("ParseUser", "user: " + user.getObjectId());
+                            Log.d("ParseUser", "hostUser: " + hostUser.getObjectId());
+                            Log.d("ParseUser", "currentUser: " + currentUser.getObjectId());
                         } else {
-                            Log.d(">>",">>"+e);
+                            finish();
+                            Log.d("ParseUser", "Couldn't find ParseUser");
                         }
                     }
                 });
             }
         }
-        listView = (ListView) findViewById(R.id.lvMain);
+
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        header = createHeader();
-        listView.addHeaderView(header);
+
+        Log.d("ParseUser", "hostUser: " + hostUser.getObjectId());
+        Log.d("ParseUser", "currentUser: " + currentUser.getObjectId());
+//        header = createHeader();
         swipeRefreshLayout.setOnRefreshListener(this);
+
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mainAdapter = new OpinionParseAdapter(this, hostUser);
-        listView.setAdapter(mainAdapter);
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (hostUser != currentUser) {
+//            mainAdapter = new OpinionParseAdapter(this, hostUser);
+//            listView.setAdapter(mainAdapter);
+//        }
+//    }
 
     private View createHeader() {
         View v = getLayoutInflater().inflate(R.layout.header, null);
@@ -141,8 +155,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onRefresh() {
-        onPause();
-        onResume();
+        mainAdapter = new OpinionParseAdapter(this, hostUser);
+        listView.setAdapter(mainAdapter);
         swipeRefreshLayout.setRefreshing(false);
     }
 }
