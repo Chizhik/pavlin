@@ -22,6 +22,7 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -106,16 +107,33 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     byte[] profilePic = stream.toByteArray();
                     // Upload to parse
                     if (imageChanged) {
-                        ParseFile file = new ParseFile(currentUser.getUsername() + "_avatar", profilePic);
-                        file.saveInBackground();
-                        currentUser.put("avatar", file);
+                        final ParseFile file = new ParseFile(currentUser.getUsername() + "_avatar", profilePic);
+                        file.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    currentUser.put("avatar", file);
+                                    currentUser.put("name", nameEditText.getText().toString());
+                                    currentUser.saveInBackground();
+                                    Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                                    Intent intentHome = new Intent(SettingsActivity.this, MainActivity.class);
+                                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intentHome);
+                                    finish();
+                                } else {
+                                    Log.d("ParseException", e.toString());
+                                    Toast.makeText(SettingsActivity.this, "Something went wrong while uploading avatar", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }
-                    currentUser.put("name", nameEditText.getText().toString());
-                    currentUser.saveInBackground();
-                    Intent intentHome = new Intent(this, MainActivity.class);
-                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intentHome);
-                    finish();
+//                    currentUser.put("name", nameEditText.getText().toString());
+//                    currentUser.saveInBackground();
+//                    Intent intentHome = new Intent(this, MainActivity.class);
+//                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intentHome);
+//                    finish();
                 }
                 break;
         }
