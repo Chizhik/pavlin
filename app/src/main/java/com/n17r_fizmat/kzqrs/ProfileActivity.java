@@ -55,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 query.getInBackground(q, new GetCallback<ParseUser>() {
                     public void done(final ParseUser user, ParseException e) {
                         if (e == null) {
-                            listView = (ListView) findViewById(R.id.lvMain);
+                            listView = (ListView) findViewById(R.id.lvMain_profile);
                             hostUser = user;
                             header = createHeader();
                             listView.addHeaderView(header);
