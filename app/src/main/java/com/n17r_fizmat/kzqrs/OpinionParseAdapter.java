@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +26,7 @@ import com.parse.ParseUser;
 /**
  * Created by Alisher on 7/14/2016.
  */
-public class OpinionParseAdapter extends ParseQueryAdapter implements View.OnClickListener {
+public class OpinionParseAdapter extends ParseQueryAdapter {
     ParseUser senderUser;
     public OpinionParseAdapter(Context context, final ParseUser receiverUser) {
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
@@ -93,21 +94,22 @@ public class OpinionParseAdapter extends ParseQueryAdapter implements View.OnCli
             e.printStackTrace();
         }
 
-        profileImage.setOnClickListener(this);
+//        profileImage.setOnItemClickListener(new AdapterView.OnItemClickListener());
         return v;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.rowProfilePic:
-                Context c = getContext();
-                Intent profileIntent = new Intent(c, ProfileActivity.class);
-                Bundle b = new Bundle();
-                String id = senderUser.getObjectId();
-                b.putString("ParseUserId", id);
-                profileIntent.putExtras(b);
-                c.startActivity(profileIntent);
-        }
-    }
+//    @Override
+//    public void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.rowProfilePic:
+//                Context c = getContext();
+//                Intent profileIntent = new Intent(c, ProfileActivity.class);
+//                Bundle b = new Bundle();
+//                String id = senderUser.getObjectId();
+//                Log.d("ParseUser", "senderUser: " + id);
+//                b.putString("ParseUserId", id);
+//                profileIntent.putExtras(b);
+//                c.startActivity(profileIntent);
+//        }
+//    }
 }

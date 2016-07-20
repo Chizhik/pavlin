@@ -1,5 +1,6 @@
 package com.n17r_fizmat.kzqrs;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +28,7 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
     private OpinionParseAdapter mainAdapter;
     private ListView listView;
     private ImageView profilePic;
@@ -61,6 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             listView.addHeaderView(header);
                             mainAdapter = new OpinionParseAdapter(ProfileActivity.this, hostUser);
                             listView.setAdapter(mainAdapter);
+                            listView.setOnItemClickListener(ProfileActivity.this);
                             Log.d("ParseUser", "user: " + user.getObjectId());
                             Log.d("ParseUser", "hostUser: " + hostUser.getObjectId());
                             Log.d("ParseUser", "currentUser: " + currentUser.getObjectId());
@@ -144,5 +147,23 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mainAdapter = new OpinionParseAdapter(this, hostUser);
         listView.setAdapter(mainAdapter);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ParseObject object = (ParseObject) listView.getItemAtPosition(i);
+        try {
+            ParseUser senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
+            Intent profileIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
+            Bundle b = new Bundle();
+            String id = senderUser.getObjectId();
+            Log.d("ParseUser", "senderUser: " + id);
+            b.putString("ParseUserId", id);
+            profileIntent.putExtras(b);
+            ProfileActivity.this.startActivity(profileIntent);
+        } catch (ParseException e) {
+            Log.v("Parse", e.toString());
+            e.printStackTrace();
+        }
     }
 }
