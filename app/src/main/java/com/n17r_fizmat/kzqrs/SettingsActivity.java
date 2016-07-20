@@ -1,5 +1,6 @@
 package com.n17r_fizmat.kzqrs;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -102,6 +103,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 } else if (currentUser.get("name")==null && nameEditText.getText().toString().matches("")) {
                     Toast.makeText(this, "Please choose name", Toast.LENGTH_SHORT).show();
                 } else {
+                    final ProgressDialog pd = new ProgressDialog(this);
+                    pd.setTitle("Загрузка картинки");
+                    pd.setMessage("Пожалуйста подождите");
+                    pd.show();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] profilePic = stream.toByteArray();
@@ -117,10 +122,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                     currentUser.saveInBackground();
                                     Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                                     Intent intentHome = new Intent(SettingsActivity.this, MainActivity.class);
+                                    pd.hide();
                                     intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intentHome);
                                     finish();
                                 } else {
+                                    pd.hide();
                                     Log.d("ParseException", e.toString());
                                     Toast.makeText(SettingsActivity.this, "Something went wrong while uploading avatar", Toast.LENGTH_SHORT).show();
                                 }
