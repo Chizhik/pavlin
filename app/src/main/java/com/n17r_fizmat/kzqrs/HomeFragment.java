@@ -1,6 +1,7 @@
 package com.n17r_fizmat.kzqrs;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,7 +29,7 @@ import com.parse.ParseUser;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
     private OpinionParseAdapter mainAdapter;
     private ListView listView;
     private ImageView profilePic;
@@ -35,8 +37,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     private Button saveButton;
     private EditText first, second, third;
     private ParseUser currentUser = ParseUser.getCurrentUser();
-    // TODO hostUser != currentUser
-    private ParseUser hostUser = currentUser;
     private Bitmap bm;
     private View header;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -58,12 +58,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-//        ListView lvMain = (ListView) v.findViewById(R.id.lvMain);
         listView = (ListView) v.findViewById(R.id.lvMain);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_layout);
         header = createHeader(savedInstanceState);
-//        lvMain.addHeaderView(header);
         listView.addHeaderView(header);
+        mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
+        listView.setAdapter(mainAdapter);
+        listView.setOnItemClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
 //        swipeRefreshLayout.post(new Runnable() {
 //                                    @Override
@@ -78,16 +79,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mainAdapter = new OpinionParseAdapter(getContext(), hostUser);
-//        OpinionAdapter adapter = new OpinionAdapter(getContext(), values);
-
-
-//        lvMain.setAdapter(adapter);
-        listView.setAdapter(mainAdapter);
-    }
 
     View createHeader(Bundle savedInstanceState) {
         View v = getLayoutInflater(savedInstanceState).inflate(R.layout.header, null);
@@ -134,7 +125,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 } else {
                     ParseObject op = new ParseObject("Opinion");
                     op.put("sender", currentUser);
-                    op.put("receiver", hostUser);
+                    op.put("receiver", currentUser);
                     op.put("firstWord", f);
                     op.put("secondWord", s);
                     op.put("thirdWord", t);
@@ -155,8 +146,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     @Override
     public void onRefresh() {
         // TODO Improve!
-        onPause();
-        onResume();
+        mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
+        listView.setAdapter(mainAdapter);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ParseObject object = (ParseObject) listView.getItemAtPosition(i);
+        try {
+            Context c = getContext();
+            ParseUser senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
+            Intent profileIntent = new Intent(c, ProfileActivity.class);
+            Bundle b = new Bundle();
+            String id = senderUser.getObjectId();
+            Log.d("ParseUser", "senderUser: " + id);
+            b.putString("ParseUserId", id);
+            profileIntent.putExtras(b);
+            c.startActivity(profileIntent);
+        } catch (ParseException e) {
+            Log.v("Parse", e.toString());
+            e.printStackTrace();
+        }
     }
 }
