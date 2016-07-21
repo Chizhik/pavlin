@@ -172,9 +172,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
+        int radius;
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            radius = bitmap.getHeight()/2;
+        } else {
+            radius = bitmap.getWidth()/2;
+        }
         // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
+                radius, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
 //        return Bitmap.createScaledBitmap(output, 200, 200, false);
