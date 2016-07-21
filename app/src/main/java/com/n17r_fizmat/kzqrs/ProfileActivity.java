@@ -108,6 +108,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             username.setText(hostUser.getString("name"));
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
+        } else {
+            Intent registerIntent = new Intent(this, SettingsActivity.class);
+            registerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(registerIntent);
+            finish();
         }
         return v;
     }
