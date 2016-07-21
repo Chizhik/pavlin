@@ -26,7 +26,7 @@ import com.parse.ParseUser;
 /**
  * Created by Alisher on 7/15/2016.
  */
-public class SearchParseAdapter extends ParseQueryAdapter implements View.OnClickListener {
+public class SearchParseAdapter extends ParseQueryAdapter {
     ParseUser user;
     public SearchParseAdapter(Context context, final String searchQuery) {
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
@@ -47,7 +47,6 @@ public class SearchParseAdapter extends ParseQueryAdapter implements View.OnClic
         super.getItemView(object, v, parent);
 
         final ImageView profileImage = (ImageView) v.findViewById(R.id.resultImage);
-        CardView card = (CardView) v.findViewById(R.id.resultCard);
         TextView username = (TextView) v.findViewById(R.id.resultText);
         try {
             user = (ParseUser) object;
@@ -72,36 +71,24 @@ public class SearchParseAdapter extends ParseQueryAdapter implements View.OnClic
             Log.v("Parse", e.toString());
             e.printStackTrace();
         }
-        card.setOnClickListener(this);
+//        card.setOnClickListener(this);
 
         return v;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.resultCard:
-                // TODO new fragment
-                Context c = getContext();
-                Intent profileIntent = new Intent(c, ProfileActivity.class);
-                Bundle b = new Bundle();
-                String id = user.getObjectId();
-                b.putString("ParseUserId", id);
-                profileIntent.putExtras(b);
-                c.startActivity(profileIntent);
-//                // Create new fragment and transaction
-//                Fragment newFragment = HomeFragment.newInstance(user);
-//                // consider using Java coding conventions (upper first char class names!!!)
-//                FragmentTransaction transaction = ((MainActivity)getContext()).getSupportFragmentManager().beginTransaction();
+//    @Override
+//    public void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.resultCard:
+//                Context c = getContext();
+//                Intent profileIntent = new Intent(c, ProfileActivity.class);
+//                Bundle b = new Bundle();
+//                String id = user.getObjectId();
+//                b.putString("ParseUserId", id);
+//                profileIntent.putExtras(b);
+//                c.startActivity(profileIntent);
 //
-//                // Replace whatever is in the fragment_container view with this fragment,
-//                // and add the transaction to the back stack
-//                transaction.replace(android.R.id.content, newFragment);
-//                transaction.addToBackStack(null);
-//
-//                // Commit the transaction
-//                transaction.commit();
-                break;
-        }
-    }
+//                break;
+//        }
+//    }
 }
