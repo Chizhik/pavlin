@@ -29,9 +29,9 @@ import com.parse.ParseUser;
 public class SearchParseAdapter extends ParseQueryAdapter {
     ParseUser user;
     public SearchParseAdapter(Context context, final String searchQuery) {
-        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
-            public ParseQuery create() {
-                ParseQuery<ParseUser> query = new ParseUser().getQuery();
+        super(context, new ParseQueryAdapter.QueryFactory<ParseUser>() {
+            public ParseQuery<ParseUser> create() {
+                ParseQuery<ParseUser> query = ParseUser.getQuery();
                 // TODO sort by popularity
                 query.whereContains("name", searchQuery);
                 return query;
