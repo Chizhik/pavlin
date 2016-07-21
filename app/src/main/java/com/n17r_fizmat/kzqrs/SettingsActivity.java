@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     pd.show();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] profilePic = stream.toByteArray();
+                    final byte[] profilePic = stream.toByteArray();
                     ByteArrayOutputStream stream_small = new ByteArrayOutputStream();
                     bm_small.compress(Bitmap.CompressFormat.PNG, 100, stream_small);
                     byte[] profilePic_small = stream_small.toByteArray();
@@ -121,27 +121,29 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void done(ParseException e) {
                                 if (e == null) {
-                                    currentUser.put("avatar_small", file_small);
-                                }
-                            }
-                        });
-                        final ParseFile file = new ParseFile(currentUser.getUsername() + "_avatar", profilePic);
-                        file.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    currentUser.put("avatar", file);
-                                    currentUser.put("name", nameEditText.getText().toString());
-                                    currentUser.saveInBackground();
-                                    Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
-                                    Intent intentHome = new Intent(SettingsActivity.this, MainActivity.class);
-                                    pd.hide();
-                                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intentHome);
-                                    finish();
+                                    final ParseFile file = new ParseFile(currentUser.getUsername() + "_avatar", profilePic);
+                                    file.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            if (e == null) {
+                                                currentUser.put("avatar", file);
+                                                currentUser.put("avatar_small", file_small);
+                                                currentUser.put("name", nameEditText.getText().toString());
+                                                currentUser.saveInBackground();
+                                                Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                                                Intent intentHome = new Intent(SettingsActivity.this, MainActivity.class);
+                                                pd.hide();
+                                                intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intentHome);
+                                                finish();
+                                            } else {
+                                                pd.hide();
+                                                Log.d("ParseException", e.toString());
+                                                Toast.makeText(SettingsActivity.this, "Something went wrong while uploading avatar", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                                 } else {
-                                    pd.hide();
-                                    Log.d("ParseException", e.toString());
                                     Toast.makeText(SettingsActivity.this, "Something went wrong while uploading avatar", Toast.LENGTH_SHORT).show();
                                 }
                             }
