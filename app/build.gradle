@@ -32,4 +32,5 @@ dependencies {
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.roughike:bottom-bar:1.2.1'
     compile 'com.parse:parseui-widget-android:0.0.1'
+    compile 'me.wangyuwei:LoadingiVew:1.0.3'
 }
