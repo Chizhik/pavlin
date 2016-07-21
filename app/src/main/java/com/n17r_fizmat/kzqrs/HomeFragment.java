@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     }
 
 
-    View createHeader(Bundle savedInstanceState) {
+    private View createHeader(Bundle savedInstanceState) {
         View v = getLayoutInflater(savedInstanceState).inflate(R.layout.header, null);
         profilePic = (ImageView) v.findViewById(R.id.profileImageHome);
         username = (TextView) v.findViewById(R.id.usernameTextHome);
@@ -105,6 +105,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
             username.setText(currentUser.getString("name"));
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
+        } else {
+            Intent registerIntent = new Intent(getContext(), SettingsActivity.class);
+            registerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(registerIntent);
+            getActivity().finish();
         }
         return v;
     }
