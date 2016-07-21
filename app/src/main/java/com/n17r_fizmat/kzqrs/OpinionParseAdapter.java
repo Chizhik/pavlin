@@ -56,7 +56,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
         try {
             senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
 //            imageFile = senderUser.fetchIfNeeded().getParseFile("avatar");
-            ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar");
+            ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
             avatar.getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {

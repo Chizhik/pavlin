@@ -1,6 +1,7 @@
 package com.n17r_fizmat.kzqrs;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,8 +41,13 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        ProgressDialog pd = new ProgressDialog(getContext());
+        pd.setTitle("Мдет поиск");
+        pd.setMessage("Пожалуйста подождите");
+        pd.show();
         SearchParseAdapter mainAdapter = new SearchParseAdapter(getContext(), query);
         listView.setAdapter(mainAdapter);
+        pd.hide();
         return false;
     }
 

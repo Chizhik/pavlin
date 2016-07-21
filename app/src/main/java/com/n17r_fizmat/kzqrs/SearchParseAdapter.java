@@ -51,7 +51,7 @@ public class SearchParseAdapter extends ParseQueryAdapter implements View.OnClic
         TextView username = (TextView) v.findViewById(R.id.resultText);
         try {
             user = (ParseUser) object;
-            ParseFile avatar = (ParseFile) user.fetchIfNeeded().get("avatar");
+            ParseFile avatar = (ParseFile) user.fetchIfNeeded().get("avatar_small");
             avatar.getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {

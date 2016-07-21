@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 String f = first.getText().toString();
                 String s = second.getText().toString();
                 String t = third.getText().toString();
-                if (f.matches("") || s.matches("") || t.matches("")) {
+                if (f.trim().matches("") || s.trim().matches("") || t.trim().matches("")) {
                     Toast.makeText(getContext(), "Заполните все три поля", Toast.LENGTH_SHORT).show();
                 } else {
                     ParseObject op = new ParseObject("Opinion");

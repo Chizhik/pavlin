@@ -35,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private EditText nameEditText;
     private Button settingsSaveButton, settingsLogoutButton;
     private Bitmap bm;
+    private Bitmap bm_small;
     private String name;
     private boolean imageChanged = false;
     private ParseUser currentUser = ParseUser.getCurrentUser();
@@ -110,8 +111,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] profilePic = stream.toByteArray();
+                    ByteArrayOutputStream stream_small = new ByteArrayOutputStream();
+                    bm_small.compress(Bitmap.CompressFormat.PNG, 100, stream_small);
+                    byte[] profilePic_small = stream_small.toByteArray();
                     // Upload to parse
                     if (imageChanged) {
+                        final ParseFile file_small = new ParseFile(currentUser.getUsername()+"_avatar_small", profilePic_small);
+                        file_small.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    currentUser.put("avatar_small", file_small);
+                                }
+                            }
+                        });
                         final ParseFile file = new ParseFile(currentUser.getUsername() + "_avatar", profilePic);
                         file.saveInBackground(new SaveCallback() {
                             @Override
@@ -133,7 +146,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 }
                             }
                         });
-
                     }
 //                    currentUser.put("name", nameEditText.getText().toString());
 //                    currentUser.saveInBackground();
@@ -163,10 +175,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 bitmap.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
-        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        //return _bmp;
+//        return Bitmap.createScaledBitmap(output, 200, 200, false);
         return output;
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -184,6 +196,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     }
                     bm = getCroppedBitmap(bm);
                     profileImage.setImageBitmap(bm);
+                    bm_small = Bitmap.createScaledBitmap(bm, 100, 100, false);
+                    bm = Bitmap.createScaledBitmap(bm, 200, 200, false);
                     imageChanged = true;
                 }
             }
