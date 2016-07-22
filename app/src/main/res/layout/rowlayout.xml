@@ -25,7 +25,7 @@
             app:riv_tile_mode="repeat"
             app:riv_oval="true"
             android:layout_gravity="center" />
-        <customfonts.MyTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="username"
@@ -43,7 +43,7 @@
         android:orientation="vertical"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
-        <customfonts.MyTextView
+        <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:minHeight="20sp"
@@ -52,7 +52,7 @@
             android:id="@+id/rowFirstWord"
             android:background="@drawable/border"
             android:layout_marginBottom="2dp"/>
-        <customfonts.MyTextView
+        <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:minHeight="20sp"
@@ -62,7 +62,7 @@
             android:layout_marginBottom="2dp"
             android:background="@drawable/border"
             android:layout_marginTop="2dp"/>
-        <customfonts.MyTextView
+        <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:minHeight="20sp"

@@ -202,7 +202,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-                    bm = getCroppedBitmap(bm);
                     profileImage.setImageBitmap(bm);
                     bm_small = Bitmap.createScaledBitmap(bm, 100, 100, false);
                     bm = Bitmap.createScaledBitmap(bm, 200, 200, false);

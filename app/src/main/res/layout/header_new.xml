@@ -27,7 +27,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="100dp" />
 
-        <customfonts.MyTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/username"
@@ -45,7 +45,7 @@
             android:layout_marginTop="10dp">
         </View>
 
-        <customfonts.MyTextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ThreeWords"
@@ -62,7 +62,7 @@
             android:layout_marginRight="20dp"
             android:orientation="vertical">
 
-            <customfonts.MyEditText
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border"
@@ -72,7 +72,7 @@
                 android:id="@+id/firstEditText"
                 android:hint="@string/hint1"/>
 
-            <customfonts.MyEditText
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border"
@@ -83,7 +83,7 @@
                 android:id="@+id/secondEditText"
                 android:hint="@string/hint2"/>
 
-            <customfonts.MyEditText
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border"
