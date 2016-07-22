@@ -84,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
 
     private View createHeader() {
-        View v = getLayoutInflater().inflate(R.layout.header, null);
+        View v = getLayoutInflater().inflate(R.layout.header_new, null);
         profilePic = (ImageView) v.findViewById(R.id.profileImageHome);
         username = (TextView) v.findViewById(R.id.usernameTextHome);
         saveButton = (Button) v.findViewById(R.id.saveButton);

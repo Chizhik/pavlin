@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
 
     private View createHeader(Bundle savedInstanceState) {
-        View v = getLayoutInflater(savedInstanceState).inflate(R.layout.header, null);
+        View v = getLayoutInflater(savedInstanceState).inflate(R.layout.header_new, null);
         profilePic = (ImageView) v.findViewById(R.id.profileImageHome);
         username = (TextView) v.findViewById(R.id.usernameTextHome);
         saveButton = (Button) v.findViewById(R.id.saveButton);
