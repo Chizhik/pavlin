@@ -30,12 +30,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             //TODO
             if (currentUser.get("name")==null || currentUser.getParseFile("avatar") == null) {
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(settingsIntent);
                 finish();
             } else {
                 Intent homeIntent = new Intent(this, MainActivity.class);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(homeIntent);
                 finish();
             }
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (e == null) {
                                     //startapp(v)
                                     Intent signinIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                    signinIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    signinIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(signinIntent);
                                     finish();
                                 } else {
@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void done(ParseException e) {
                         if (e == null) {
                             Intent registerIntent = new Intent(LoginActivity.this, SettingsActivity.class);
-                            registerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            registerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(registerIntent);
                             finish();
                         } else {
