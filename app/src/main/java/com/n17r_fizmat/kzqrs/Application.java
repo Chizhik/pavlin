@@ -2,7 +2,6 @@ package com.n17r_fizmat.kzqrs;
 
 import com.parse.Parse;
 import com.parse.ParseInstallation;
-import com.parse.PushService;
 
 /**
  * Created by Alisher on 7/4/2016.
