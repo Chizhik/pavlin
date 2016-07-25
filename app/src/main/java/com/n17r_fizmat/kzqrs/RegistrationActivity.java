@@ -87,6 +87,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     user = new ParseUser();
                     user.setUsername(username_str);
                     user.setPassword(password_str);
+                    // TODO: check if email or username is already used
                     user.setEmail(email_str);
                     user.signUpInBackground(new SignUpCallback() {
                         @Override
