@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(final View v) {
         switch (v.getId()) {
-            case R.id.signInButton:
+            case R.id.login_get_started:
                 ParseUser.logInInBackground(username.getText().toString(),
                         password.getText().toString(),
                         new LogInCallback() {
@@ -71,33 +71,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     finish();
                                 } else {
                                     Log.d("ParseException", e.toString());
-                                    Toast.makeText(LoginActivity.this,"Incorrect email or password. Please try again.",
+                                    Toast.makeText(LoginActivity.this,"Неправильный user name или password. Попробуйте еще раз",
                                             Toast.LENGTH_SHORT).show();
                                     //wrong email or password
                                 }
                             }
                         });
                 break;
-            case R.id.signUpButton:
-                user = new ParseUser();
-                user.setUsername(username.getText().toString()); //email is username
-                user.setPassword(password.getText().toString());
-
-                user.signUpInBackground(new SignUpCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Intent registerIntent = new Intent(LoginActivity.this, SettingsActivity.class);
-                            registerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(registerIntent);
-                            finish();
-                        } else {
-                            Log.d("ParseException", e.toString());
-                            Toast.makeText(LoginActivity.this, "This email is already registered!",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            case R.id.login_register:
+                Intent registerIntent = new Intent(LoginActivity.this, RegistrationActivity.class);
+                startActivity(registerIntent);
+                finish();
                 break;
         }
     }
