@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -16,7 +17,7 @@ import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button signin, signup;
+    TextView signin, register;
     EditText username, password;
     ParseUser user;
 
@@ -44,13 +45,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
 
-        username = (EditText) findViewById(R.id.emailEditText);
-        password  = (EditText) findViewById(R.id.passwordEditText);
-        signin = (Button) findViewById(R.id.signInButton);
-        signup = (Button) findViewById(R.id.signUpButton);
+        username = (EditText) findViewById(R.id.login_username);
+        password  = (EditText) findViewById(R.id.login_password);
+        signin = (TextView) findViewById(R.id.login_get_started);
+        register = (TextView) findViewById(R.id.login_register);
         //set listeners
         signin.setOnClickListener(this);
-        signup.setOnClickListener(this);
+        register.setOnClickListener(this);
     }
 
     @Override

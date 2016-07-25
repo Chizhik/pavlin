@@ -4,73 +4,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/login_background"
     tools:context="com.n17r_fizmat.kzqrs.LoginActivity">
 
-    <ImageView
-        android:layout_width="250dp"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+    </View>
+
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"/>
+        android:id="@+id/login_username"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:hint="User Name"
+        android:background="@drawable/border"
+        android:inputType="text"
+        android:textSize="15sp"
+        android:padding="16dp"
+        android:layout_marginTop="10dp"
+        android:textColorHint="#73787b"/>
 
 
-    <RelativeLayout
-        android:layout_width="278dp"
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:id="@+id/login_password"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:hint="Password"
+        android:background="@drawable/border"
+        android:inputType="textPassword"
+        android:textSize="15sp"
+        android:padding="16dp"
+        android:layout_marginTop="10dp"
+        android:textColorHint="#73787b"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:hint="@string/emailPlaceholder"
-            android:ems="10"
-            android:inputType="textEmailAddress"
-            android:id="@+id/emailEditText"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0">
+    </View>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:inputType="textPassword"
-            android:hint="@string/passwordPlaceholder"
-            android:ems="10"
-            android:id="@+id/passwordEditText"
-            android:layout_below="@+id/emailEditText"
-            android:layout_alignLeft="@+id/emailEditText"
-            android:layout_alignStart="@+id/emailEditText"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+    <TextView
+        android:id="@+id/login_get_started"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradiant"
+        android:padding="16dp"
+        android:text="@string/login"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="15dp"
+        />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/signInButtonName"
-            android:textStyle="bold"
-            android:id="@+id/signInButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_below="@+id/passwordEditText"
-            android:layout_alignLeft="@+id/passwordEditText"
-            android:layout_alignStart="@+id/passwordEditText" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_register"
+        android:text="@string/registration_link"
+        android:textColor="#006efe"
+        android:gravity="center"
+        android:layout_marginBottom="15dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/signUpButtonName"
-            android:textStyle="bold"
-            android:id="@+id/signUpButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_below="@+id/passwordEditText"
-            android:layout_alignRight="@+id/passwordEditText"
-            android:layout_alignEnd="@+id/passwordEditText" />
-    </RelativeLayout>
+
+
+
 
 </LinearLayout>

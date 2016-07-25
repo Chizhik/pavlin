@@ -7,6 +7,8 @@
     <string name="settingsButton">Settings</string>
     <string name="aboutButton">About</string>
     <string name="get_started">Начать</string>
+    <string name="login">Войти</string>
+    <string name="registration_link">Ещё не зарегистрированы?</string>
     <string name="upload_avatar">Загрузить фото профиля</string>
     <string name="username">Имя пользователя</string>
     <string name="signInButtonName">Sign In</string>
