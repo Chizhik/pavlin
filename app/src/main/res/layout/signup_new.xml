@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <FrameLayout
@@ -8,6 +7,7 @@
         android:layout_height="150dp"
         android:background="@drawable/lifee">
     </FrameLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_gravity="center"
-
             />
 
     </LinearLayout>
@@ -58,64 +57,30 @@
             android:layout_width="match_parent"
             android:layout_height="0.2dp"
             android:background="#c6cbcf"
-            android:layout_marginTop="25dp">
+            android:layout_marginTop="20dp">
         </View>
-
-    </LinearLayout>
-
-    <customfonts.MyTextView
-        android:id="@+id/getstarted"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/gradiant"
-        android:padding="18dp"
-        android:text="GET STARTED"
-        android:gravity="center"
-        android:textColor="#fff"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="35dp"
-        />
-    <customfonts.MyTextView
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Terms and Condition"
-        android:textColor="#006efe"
-        android:gravity="center"
-        android:layout_marginBottom="10dp"
-        />
-
-    <LinearLayout
-        android:layout_above="@+id/getstarted"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:orientation="vertical"
-
-
-        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             >
 
-            <customfonts.MyEditText
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="User Name"
                 android:background="@drawable/border"
                 android:inputType="text"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:padding="16dp"
-                android:textColorHint="#73787b"
-                android:letterSpacing="0.02"/>
+                android:textColorHint="#73787b"/>
 
-            <customfonts.MyEditText
+            <EditText
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,51 +89,64 @@
                 android:layout_marginLeft="7dp"
                 android:inputType="text"
                 android:padding="16dp"
-                android:textSize="15dp"
-                android:textColorHint="#73787b"
-                android:letterSpacing="0.02"/>
+                android:textSize="15sp"
+                android:textColorHint="#73787b"/>
         </LinearLayout>
 
-
-        <customfonts.MyEditText
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:hint="Password"
             android:background="@drawable/border"
             android:inputType="textPassword"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:padding="16dp"
             android:layout_marginTop="10dp"
-            android:textColorHint="#73787b"
-            android:letterSpacing="0.02"/>
+            android:textColorHint="#73787b"/>
 
 
-        <customfonts.MyEditText
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:hint="Confirm Password"
             android:background="@drawable/border"
             android:inputType="textPassword"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:padding="16dp"
             android:layout_marginTop="10dp"
-            android:textColorHint="#73787b"
-            android:letterSpacing="0.02"/>
+            android:textColorHint="#73787b"/>
 
-        <LinearLayout
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"/>
+
+        <TextView
+            android:id="@+id/getstarted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_weight="3"
-            >
-
-        </LinearLayout>
-
+            android:background="@drawable/gradiant"
+            android:padding="18dp"
+            android:text="GET STARTED"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Terms and Condition"
+            android:textColor="#006efe"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            />
 
     </LinearLayout>
-
 
 </RelativeLayout>
