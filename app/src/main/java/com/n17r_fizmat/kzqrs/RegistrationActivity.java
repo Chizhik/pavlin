@@ -87,6 +87,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     user = new ParseUser();
                     user.setUsername(username_str);
                     user.setPassword(password_str);
+                    user.setEmail(email_str);
                     user.signUpInBackground(new SignUpCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -137,7 +138,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                             } else {
                                 pd.hide();
                                 Log.d("ParseException", e.toString());
-                                Toast.makeText(RegistrationActivity.this, "Выбранное вами имя пользователя уже занято", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegistrationActivity.this, "Выбранное вами имя пользователя или email уже занят", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
