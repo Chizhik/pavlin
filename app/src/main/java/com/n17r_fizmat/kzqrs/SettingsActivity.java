@@ -143,12 +143,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                             }
                         });
                     }
-//                    currentUser.put("name", nameEditText.getText().toString());
-//                    currentUser.saveInBackground();
-//                    Intent intentHome = new Intent(this, MainActivity.class);
-//                    intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intentHome);
-//                    finish();
                 }
                 break;
         }
