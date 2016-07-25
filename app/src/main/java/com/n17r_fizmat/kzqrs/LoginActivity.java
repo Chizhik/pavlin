@@ -28,18 +28,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
+            Intent homeIntent = new Intent(this, MainActivity.class);
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(homeIntent);
+            finish();
             //TODO
-            if (currentUser.get("name")==null || currentUser.getParseFile("avatar") == null) {
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(settingsIntent);
-                finish();
-            } else {
-                Intent homeIntent = new Intent(this, MainActivity.class);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(homeIntent);
-                finish();
-            }
+//            if (currentUser.get("name")==null || currentUser.getParseFile("avatar") == null) {
+//                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+//                settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(settingsIntent);
+//                finish();
+//            } else {
+//                Intent homeIntent = new Intent(this, MainActivity.class);
+//                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(homeIntent);
+//                finish();
+//            }
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
