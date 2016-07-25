@@ -28,7 +28,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     EditText username, email, password, confirm_password;
     TextView get_started;
     Bitmap bm, bm_small;
-    Boolean imageChanged;
+    Boolean imageChanged = false;
     ParseUser user;
 
     @Override
@@ -43,6 +43,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         password = (EditText) findViewById(R.id.reg_password);
         confirm_password = (EditText) findViewById(R.id.reg_confirm_password);
         get_started = (TextView) findViewById(R.id.reg_get_started);
+
+        upload.setOnClickListener(this);
+        get_started.setOnClickListener(this);
 
     }
 
@@ -71,7 +74,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     Toast.makeText(this, "Пожалуйста выберите фото профиля", Toast.LENGTH_SHORT).show();
                 } else if (username_str.matches("") || email_str.matches("") || password_str.matches("") || confirm_password_str.matches("")) {
                     Toast.makeText(this, "Пожалуйста заполните все поля", Toast.LENGTH_SHORT).show();
-                } else if (!password_str.matches(confirm_password_str)) {
+                } else if (!password_str.equals(confirm_password_str)) {
                     Toast.makeText(this, "Введенные пароли не совпадают", Toast.LENGTH_SHORT).show();
                 } else {
                     final ProgressDialog pd = new ProgressDialog(this);

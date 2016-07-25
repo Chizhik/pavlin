@@ -33,7 +33,7 @@ public class SearchParseAdapter extends ParseQueryAdapter {
             public ParseQuery<ParseUser> create() {
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
                 // TODO sort by popularity
-                query.whereContains("name", searchQuery);
+                query.whereContains("username", searchQuery);
                 return query;
             }
         });
@@ -63,7 +63,7 @@ public class SearchParseAdapter extends ParseQueryAdapter {
                     }
                 }
             });
-            Object name = user.fetchIfNeeded().get("name");
+            Object name = user.fetchIfNeeded().getUsername();
             if (name != null) {
                 username.setText(name.toString());
             }

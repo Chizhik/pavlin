@@ -73,7 +73,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
 //                profilePic.setParseFile(imageFile);
 //                profilePic.loadInBackground();
 //            }
-            Object name = senderUser.fetchIfNeeded().get("name");
+            Object name = senderUser.fetchIfNeeded().getUsername();
             Object f = object.fetchIfNeeded().get("firstWord");
             Object s = object.fetchIfNeeded().get("secondWord");
             Object t = object.fetchIfNeeded().get("thirdWord");

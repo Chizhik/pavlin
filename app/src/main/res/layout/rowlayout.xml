@@ -29,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="username"
-            android:textSize="20sp"
+            android:maxWidth="120dp"
+            android:textSize="15sp"
             android:id="@+id/rowUsername"/>
     </LinearLayout>
     <View
@@ -46,8 +47,8 @@
         <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:minHeight="20sp"
-            android:textSize="20sp"
+            android:padding="3dp"
+            android:textSize="15sp"
             android:gravity="center"
             android:id="@+id/rowFirstWord"
             android:background="@drawable/border"
@@ -55,8 +56,8 @@
         <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:minHeight="20sp"
-            android:textSize="20sp"
+            android:padding="3dp"
+            android:textSize="15sp"
             android:gravity="center"
             android:id="@+id/rowSecondWord"
             android:layout_marginBottom="2dp"
@@ -65,8 +66,8 @@
         <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:minHeight="20sp"
-            android:textSize="20sp"
+            android:padding="3dp"
+            android:textSize="15sp"
             android:gravity="center"
             android:id="@+id/rowThirdWord"
             android:background="@drawable/border"

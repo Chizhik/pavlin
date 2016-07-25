@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         first = (EditText) v.findViewById(R.id.firstEditText);
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
-        if (currentUser.get("name") != null && currentUser.getParseFile("avatar") != null) {
+        if (currentUser.getParseFile("avatar") != null) {
             ParseFile avatar = (ParseFile) currentUser.get("avatar");
             avatar.getDataInBackground(new GetDataCallback() {
                 @Override
@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     }
                 }
             });
-            username.setText(currentUser.getString("name"));
+            username.setText(currentUser.getUsername());
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
         } else {
