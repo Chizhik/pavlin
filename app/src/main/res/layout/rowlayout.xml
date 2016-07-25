@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="username"
             android:maxWidth="120dp"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:id="@+id/rowUsername"/>
     </LinearLayout>
     <View
@@ -47,8 +47,8 @@
         <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
-            android:textSize="15sp"
+            android:padding="5dp"
+            android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/rowFirstWord"
             android:background="@drawable/border"
@@ -56,8 +56,8 @@
         <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
-            android:textSize="15sp"
+            android:padding="5dp"
+            android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/rowSecondWord"
             android:layout_marginBottom="2dp"
@@ -66,8 +66,8 @@
         <TextView
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
-            android:textSize="15sp"
+            android:padding="5dp"
+            android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/rowThirdWord"
             android:background="@drawable/border"

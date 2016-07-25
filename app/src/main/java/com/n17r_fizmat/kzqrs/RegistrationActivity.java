@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,7 +32,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private static final int PICK_IMAGE = 1;
     ImageView upload, profileImage;
     EditText username, email, password, confirm_password;
-    TextView get_started;
+    Button get_started;
     Bitmap bm, bm_small;
     Boolean imageChanged = false;
     ParseUser user;
@@ -47,7 +48,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         email = (EditText) findViewById(R.id.reg_email);
         password = (EditText) findViewById(R.id.reg_password);
         confirm_password = (EditText) findViewById(R.id.reg_confirm_password);
-        get_started = (TextView) findViewById(R.id.reg_get_started);
+        get_started = (Button) findViewById(R.id.reg_get_started);
 
         upload.setOnClickListener(this);
         get_started.setOnClickListener(this);
@@ -121,38 +122,34 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                                                                 if (e == null) {
                                                                     Toast.makeText(RegistrationActivity.this, "Сохранено!", Toast.LENGTH_SHORT).show();
                                                                     Intent intentHome = new Intent(RegistrationActivity.this, MainActivity.class);
-                                                                    pd.hide();
                                                                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                     startActivity(intentHome);
                                                                     finish();
                                                                 } else {
-                                                                    pd.hide();
                                                                     Log.d("ParseException", e.toString());
                                                                     Toast.makeText(RegistrationActivity.this, "Что-то пошло не так. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                                                                 }
                                                             }
                                                         });
                                                     } else {
-                                                        pd.hide();
                                                         Log.d("ParseException", e.toString());
                                                         Toast.makeText(RegistrationActivity.this, "Проблема с загрузкой фото профиля. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
                                         } else {
-                                            pd.hide();
                                             Log.d("ParseException", e.toString());
                                             Toast.makeText(RegistrationActivity.this, "Проблема с загрузкой фото профиля. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
                             } else {
-                                pd.hide();
                                 Log.d("ParseException", e.toString());
                                 Toast.makeText(RegistrationActivity.this, "Выбранное вами имя пользователя или email уже занят", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
+                    pd.dismiss();
                 }
                 break;
         }

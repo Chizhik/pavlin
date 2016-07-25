@@ -1,5 +1,6 @@
 package com.n17r_fizmat.kzqrs;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +18,8 @@ import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView signin, register;
+    TextView register;
+    Button signin;
     EditText username, password;
     ParseUser user;
 
@@ -51,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         username = (EditText) findViewById(R.id.login_username);
         password  = (EditText) findViewById(R.id.login_password);
-        signin = (TextView) findViewById(R.id.login_get_started);
+        signin = (Button) findViewById(R.id.login_get_started);
         register = (TextView) findViewById(R.id.login_register);
         //set listeners
         signin.setOnClickListener(this);
@@ -62,6 +64,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.login_get_started:
+                final ProgressDialog pd = new ProgressDialog(this);
+                pd.setTitle("Загрузка");
+                pd.setMessage("Пожалуйста подождите");
+                pd.show();
                 ParseUser.logInInBackground(username.getText().toString(),
                         password.getText().toString(),
                         new LogInCallback() {
@@ -81,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 }
                             }
                         });
+                pd.dismiss();
                 break;
             case R.id.login_register:
                 Intent registerIntent = new Intent(LoginActivity.this, RegistrationActivity.class);
