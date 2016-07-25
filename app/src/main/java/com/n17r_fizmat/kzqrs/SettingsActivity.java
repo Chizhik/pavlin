@@ -127,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                 Toast.makeText(SettingsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                                                 Intent intentHome = new Intent(SettingsActivity.this, MainActivity.class);
                                                 pd.hide();
-                                                intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intentHome);
                                                 finish();
                                             } else {

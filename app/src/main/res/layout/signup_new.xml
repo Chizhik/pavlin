@@ -16,6 +16,7 @@
         android:padding="20dp">
         <ImageView
             android:layout_width="40dp"
+            android:id="@+id/reg_upload_photo"
             android:layout_height="40dp"
             android:src="@drawable/camera"
             android:layout_gravity="right"/>
@@ -24,7 +25,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upload Profile Picture"
+            android:text="@string/upload_avatar"
             android:textColor="#fff"
             android:textSize="14.5dp"
             android:layout_marginStart="8dp"
@@ -40,7 +41,7 @@
         android:orientation="vertical">
         <com.makeramen.roundedimageview.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profileImageHome"
+            android:id="@+id/reg_profile_image"
             android:src="@drawable/usericon"
             app:riv_corner_radius="30dip"
             app:riv_border_width="5dip"
@@ -72,6 +73,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/reg_user_name"
                 android:layout_weight="1"
                 android:hint="User Name"
                 android:background="@drawable/border"
@@ -84,10 +86,11 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/reg_email"
                 android:hint="Email"
                 android:background="@drawable/border"
                 android:layout_marginLeft="7dp"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:padding="16dp"
                 android:textSize="15sp"
                 android:textColorHint="#73787b"/>
@@ -96,6 +99,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/reg_password"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="Password"
@@ -110,6 +114,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/reg_confirm_password"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="Confirm Password"
@@ -126,26 +131,27 @@
             android:layout_weight="1.0"/>
 
         <TextView
-            android:id="@+id/getstarted"
+            android:id="@+id/reg_get_started"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/gradiant"
-            android:padding="18dp"
-            android:text="GET STARTED"
+            android:padding="16dp"
+            android:text="@string/get_started"
+            android:textSize="15sp"
             android:gravity="center"
             android:textColor="#fff"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Terms and Condition"
-            android:textColor="#006efe"
-            android:gravity="center"
-            android:layout_marginBottom="10dp"
-            />
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Terms and Condition"-->
+            <!--android:textColor="#006efe"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--/>-->
 
     </LinearLayout>
 
