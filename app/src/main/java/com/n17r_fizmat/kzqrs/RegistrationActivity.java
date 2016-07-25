@@ -1,8 +1,10 @@
 package com.n17r_fizmat.kzqrs;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,9 +22,12 @@ import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
+    private final int GALLERY_ACTIVITY_CODE=200;
+    private final int RESULT_CROP = 400;
     private static final int PICK_IMAGE = 1;
     ImageView upload, profileImage;
     EditText username, email, password, confirm_password;
@@ -53,16 +58,18 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.reg_upload_photo:
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("image/*");
-
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("image/*");
-
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
-                startActivityForResult(chooserIntent, PICK_IMAGE);
+                Intent gallery_Intent = new Intent(getApplicationContext(), GalleryUtil.class);
+                startActivityForResult(gallery_Intent, GALLERY_ACTIVITY_CODE);
+//                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+//                getIntent.setType("image/*");
+//
+//                Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                pickIntent.setType("image/*");
+//
+//                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+//                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+//
+//                startActivityForResult(chooserIntent, PICK_IMAGE);
 
                 break;
             case R.id.reg_get_started:
@@ -151,26 +158,84 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == PICK_IMAGE) {
+//            if (resultCode == RESULT_OK) {
+//                bm = null;
+//
+//                if (data != null) {
+//                    try {
+//                        bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+//                    } catch(IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    profileImage.setImageBitmap(bm);
+//                    bm_small = Bitmap.createScaledBitmap(bm, 100, 100, false);
+//                    bm = Bitmap.createScaledBitmap(bm, 200, 200, false);
+//                    imageChanged = true;
+//                }
+//            }
+//        }
+//    }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE) {
-            if (resultCode == RESULT_OK) {
-                bm = null;
-
-                if (data != null) {
-                    try {
-                        bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                    profileImage.setImageBitmap(bm);
-                    bm_small = Bitmap.createScaledBitmap(bm, 100, 100, false);
-                    bm = Bitmap.createScaledBitmap(bm, 200, 200, false);
-                    imageChanged = true;
-                }
+        if (requestCode == GALLERY_ACTIVITY_CODE) {
+            if(resultCode == RESULT_OK){
+                String picturePath = data.getStringExtra("picturePath");
+                //perform Crop on the Image Selected from Gallery
+                performCrop(picturePath);
             }
+        }
+
+        if (requestCode == RESULT_CROP ) {
+            if(resultCode == RESULT_OK){
+                Bundle extras = data.getExtras();
+                Bitmap selectedBitmap = extras.getParcelable("data");
+                // Set The Bitmap Data To ImageView
+                bm_small = Bitmap.createScaledBitmap(selectedBitmap, 100, 100, false);
+                bm = Bitmap.createScaledBitmap(selectedBitmap, 200, 200, false);
+                profileImage.setImageBitmap(bm);
+                profileImage.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageChanged = true;
+            }
+        }
+    }
+
+    private void performCrop(String picUri) {
+        try {
+            //Start Crop Activity
+
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // indicate image type and Uri
+            File f = new File(picUri);
+            Uri contentUri = Uri.fromFile(f);
+
+            cropIntent.setDataAndType(contentUri, "image/*");
+            // set crop properties
+            cropIntent.putExtra("crop", "true");
+            // indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            // indicate output X and Y
+            cropIntent.putExtra("outputX", 280);
+            cropIntent.putExtra("outputY", 280);
+
+            // retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            // start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, RESULT_CROP);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            // display an error message
+            String errorMessage = "your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 }
