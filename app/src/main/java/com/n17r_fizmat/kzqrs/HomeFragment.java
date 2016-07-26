@@ -122,11 +122,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 startActivity(intentHome);
                 break;
             case R.id.saveButton:
-                String f = first.getText().toString();
-                String s = second.getText().toString();
-                String t = third.getText().toString();
-                if (f.trim().matches("") || s.trim().matches("") || t.trim().matches("")) {
+                String f = first.getText().toString().trim();
+                String s = second.getText().toString().trim();
+                String t = third.getText().toString().trim();
+                if (f.matches("") || s.matches("") || t.matches("")) {
                     Toast.makeText(getContext(), "Заполните все три поля", Toast.LENGTH_SHORT).show();
+                } else if (f.contains(" ") || s.contains(" ") || t.contains(" ")) {
+                    Toast.makeText(getContext(), "Введите по одному слову в каждое поле", Toast.LENGTH_SHORT).show();
                 } else {
                     ParseObject op = new ParseObject("Opinion");
                     op.put("sender", currentUser);

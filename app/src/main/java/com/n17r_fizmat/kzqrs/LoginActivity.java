@@ -79,15 +79,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     signinIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(signinIntent);
                                     finish();
+                                    pd.dismiss();
                                 } else {
                                     Log.d("ParseException", e.toString());
+                                    pd.dismiss();
                                     Toast.makeText(LoginActivity.this,"Неправильный user name или password. Попробуйте еще раз",
                                             Toast.LENGTH_SHORT).show();
                                     //wrong email or password
                                 }
                             }
                         });
-                pd.dismiss();
                 break;
             case R.id.login_register:
                 Intent registerIntent = new Intent(LoginActivity.this, RegistrationActivity.class);

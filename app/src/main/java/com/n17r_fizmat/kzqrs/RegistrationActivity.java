@@ -75,8 +75,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.reg_get_started:
                 final String username_str = username.getText().toString().trim();
-                String email_str = email.getText().toString().trim();
-                String password_str = password.getText().toString().trim();
+                final String email_str = email.getText().toString().trim();
+                final String password_str = password.getText().toString().trim();
                 String confirm_password_str = confirm_password.getText().toString().trim();
                 if (!imageChanged) {
                     Toast.makeText(this, "Пожалуйста выберите фото профиля", Toast.LENGTH_SHORT).show();
@@ -98,8 +98,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     user = new ParseUser();
                     user.setUsername(username_str);
                     user.setPassword(password_str);
-                    // TODO: check if email or username is already used
-                    user.setEmail(email_str);
                     user.signUpInBackground(new SignUpCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -114,6 +112,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                                                 @Override
                                                 public void done(ParseException e) {
                                                     if (e == null) {
+                                                        user.setUsername(username_str);
+                                                        user.setPassword(password_str);
+                                                        user.setEmail(email_str);
                                                         user.put("avatar", file);
                                                         user.put("avatar_small", file_small);
                                                         user.saveInBackground(new SaveCallback() {
@@ -125,31 +126,43 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                                                                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                     startActivity(intentHome);
                                                                     finish();
+                                                                    pd.dismiss();
                                                                 } else {
+                                                                    user.logOutInBackground();
+                                                                    user.deleteInBackground();
+                                                                    pd.dismiss();
                                                                     Log.d("ParseException", e.toString());
                                                                     Toast.makeText(RegistrationActivity.this, "Что-то пошло не так. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                                                                 }
                                                             }
                                                         });
                                                     } else {
+                                                        user.logOutInBackground();
+                                                        user.deleteInBackground();
+                                                        pd.dismiss();
                                                         Log.d("ParseException", e.toString());
                                                         Toast.makeText(RegistrationActivity.this, "Проблема с загрузкой фото профиля. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
                                         } else {
+                                            user.logOutInBackground();
+                                            user.deleteInBackground();
+                                            pd.dismiss();
                                             Log.d("ParseException", e.toString());
                                             Toast.makeText(RegistrationActivity.this, "Проблема с загрузкой фото профиля. Попробуйте еще раз", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
                             } else {
+                                user.logOutInBackground();
+                                user.deleteInBackground();
+                                pd.dismiss();
                                 Log.d("ParseException", e.toString());
                                 Toast.makeText(RegistrationActivity.this, "Выбранное вами имя пользователя или email уже занят", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-                    pd.dismiss();
                 }
                 break;
         }
