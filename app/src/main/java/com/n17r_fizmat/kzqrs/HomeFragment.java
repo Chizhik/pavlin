@@ -151,6 +151,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     @Override
     public void onRefresh() {
         // TODO Improve!
+        listView.removeHeaderView(header);
+        header = createHeader(null);
+        listView.addHeaderView(header);
         mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
         listView.setAdapter(mainAdapter);
         swipeRefreshLayout.setRefreshing(false);

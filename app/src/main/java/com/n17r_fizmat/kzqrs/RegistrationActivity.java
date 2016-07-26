@@ -195,7 +195,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 Bitmap selectedBitmap = extras.getParcelable("data");
                 // Set The Bitmap Data To ImageView
                 bm_small = Bitmap.createScaledBitmap(selectedBitmap, 100, 100, false);
-                bm = Bitmap.createScaledBitmap(selectedBitmap, 200, 200, false);
+                bm = Bitmap.createScaledBitmap(selectedBitmap, 300, 300, false);
                 profileImage.setImageBitmap(bm);
 //                profileImage.setScaleType(ImageView.ScaleType.FIT_XY);
                 imageChanged = true;

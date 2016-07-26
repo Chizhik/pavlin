@@ -5,40 +5,60 @@
     android:layout_height="match_parent"
     tools:context="com.n17r_fizmat.kzqrs.SettingsActivity"
     android:orientation="vertical"
-    android:background="@drawable/login_background"
     android:layout_gravity="center">
     <View
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="40dp">
     </View>
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profileImageView"
-        android:src="@drawable/profile_pic"
-        android:layout_gravity="center_horizontal"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:id="@+id/nameEditText"
-        android:hint="Enter name"
-        android:gravity="center"
-        />
+        android:src="@drawable/usericon"
+        app:riv_corner_radius="30dip"
+        app:riv_border_width="3dp"
+        android:layout_height="200dp"
+        android:layout_width="200dp"
+        app:riv_border_color="#fff"
+        app:riv_mutate_background="true"
+        app:riv_tile_mode="repeat"
+        app:riv_oval="true"
+        android:layout_gravity="center_horizontal" />
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SAVE"
-        android:textSize="20sp"
-        android:id="@+id/settingsSaveButton"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        />
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:padding="16dp"
+            android:textSize="15sp"
+            android:id="@+id/nameEditText"
+            android:layout_marginRight="10dp"
+            android:hint="User Name"
+            android:textColorHint="#73787b"
+            android:gravity="start"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradiant"
+            android:text="S"
+            android:textSize="15sp"
+            android:padding="16dp"
+            android:id="@+id/settingsSaveButton"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -51,7 +71,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/LogoutButtonMenu"
+        android:background="@drawable/gradiant"
         android:id="@+id/settingsLogoutButton"
         android:textSize="20sp"
         />
