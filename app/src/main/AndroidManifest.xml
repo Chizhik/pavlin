@@ -25,7 +25,11 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".RegistrationActivity" />
-        <activity android:name=".GalleryUtil"></activity>
+        <activity android:name=".GalleryUtil"
+            android:launchMode="singleTop"
+            android:noHistory="false">
+
+        </activity>
     </application>
 
 </manifest>

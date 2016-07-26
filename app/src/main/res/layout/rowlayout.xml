@@ -15,16 +15,16 @@
         <com.makeramen.roundedimageview.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/rowProfilePic"
-            android:src="@drawable/profile_pic"
+            android:src="@drawable/usericon"
             app:riv_corner_radius="30dip"
-            app:riv_border_width="5dip"
+            app:riv_border_width="2dp"
             android:layout_height="60dp"
             android:layout_width="60dp"
             app:riv_border_color="#fff"
             app:riv_mutate_background="true"
             app:riv_tile_mode="repeat"
             app:riv_oval="true"
-            android:layout_gravity="center" />
+            android:layout_gravity="start" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

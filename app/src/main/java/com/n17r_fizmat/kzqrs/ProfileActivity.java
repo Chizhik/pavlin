@@ -91,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         first = (EditText) v.findViewById(R.id.firstEditText);
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
-        if (hostUser.get("name") != null && hostUser.getParseFile("avatar") != null) {
+        if (hostUser.getParseFile("avatar") != null) {
             ParseFile avatar = (ParseFile) hostUser.get("avatar");
             avatar.getDataInBackground(new GetDataCallback() {
                 @Override
@@ -108,11 +108,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             username.setText(hostUser.getString("name"));
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
-        } else {
-            Intent registerIntent = new Intent(this, SettingsActivity.class);
-            registerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(registerIntent);
-            finish();
         }
         return v;
     }
