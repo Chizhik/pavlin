@@ -33,7 +33,7 @@ public class SearchParseAdapter extends ParseQueryAdapter {
             public ParseQuery<ParseUser> create() {
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
                 // TODO sort by popularity
-                query.whereContains("username", searchQuery);
+                query.whereStartsWith("username", searchQuery);
                 return query;
             }
         });
