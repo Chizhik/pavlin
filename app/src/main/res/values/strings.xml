@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Poll</string>
+    <string name="app_name">Pavlin</string>
     <string name="emailPlaceholder">email</string>
     <string name="typeQuestion">Type your yes/no question here</string>
     <string name="passwordPlaceholder">password</string>

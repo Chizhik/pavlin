@@ -105,7 +105,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
             });
-            username.setText(hostUser.getString("name"));
+            username.setText(hostUser.getUsername());
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
         }
@@ -137,6 +137,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     third.clearFocus();
                     mainAdapter = new OpinionParseAdapter(this, hostUser);
                     listView.setAdapter(mainAdapter);
+                    Toast.makeText(this, "Сохранено!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

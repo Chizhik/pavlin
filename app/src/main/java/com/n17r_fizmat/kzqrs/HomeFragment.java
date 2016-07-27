@@ -143,8 +143,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     second.clearFocus();
                     third.setText("");
                     third.clearFocus();
-                    onPause();
-                    onResume();
+                    mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
+                    listView.setAdapter(mainAdapter);
+                    Toast.makeText(getContext(), "Сохранено!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
