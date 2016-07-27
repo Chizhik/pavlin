@@ -63,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }
             });
-            name = currentUser.getString("name");
+            name = currentUser.getUsername();
             nameEditText.setText(name);
 
         }
