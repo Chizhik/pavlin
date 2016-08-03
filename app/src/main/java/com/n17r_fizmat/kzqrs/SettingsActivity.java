@@ -32,7 +32,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 //    private static final int PICK_IMAGE = 1;
     private ImageView profileImage;
     private EditText nameEditText;
-    private Button settingsSaveButton, settingsLogoutButton;
     private Bitmap bm;
     private Bitmap bm_small;
     private String name;
@@ -46,8 +45,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         profileImage = (ImageView) findViewById(R.id.profileImageView);
         nameEditText = (EditText) findViewById(R.id.nameEditText);
-        settingsSaveButton = (Button) findViewById(R.id.settingsSaveButton);
-        settingsLogoutButton = (Button) findViewById(R.id.settingsLogoutButton);
+        ImageView settingsSaveButton = (ImageView) findViewById(R.id.settingsSaveButton);
+        Button settingsLogoutButton = (Button) findViewById(R.id.settingsLogoutButton);
 
         if (currentUser.getParseFile("avatar") != null) {
             ParseFile avatar = (ParseFile) currentUser.get("avatar");
