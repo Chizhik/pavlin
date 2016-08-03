@@ -31,6 +31,8 @@
             android:text="username"
             android:maxWidth="120dp"
             android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#363147"
             android:id="@+id/rowUsername"/>
     </LinearLayout>
     <View
@@ -51,6 +53,7 @@
             android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/rowFirstWord"
+            android:textColor="#363147"
             android:background="@drawable/border"
             android:layout_marginBottom="2dp"/>
         <TextView
@@ -61,6 +64,7 @@
             android:gravity="center"
             android:id="@+id/rowSecondWord"
             android:layout_marginBottom="2dp"
+            android:textColor="#363147"
             android:background="@drawable/border"
             android:layout_marginTop="2dp"/>
         <TextView
@@ -70,6 +74,7 @@
             android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/rowThirdWord"
+            android:textColor="#363147"
             android:background="@drawable/border"
             android:layout_marginTop="2dp"/>
 
