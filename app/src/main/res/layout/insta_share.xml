@@ -146,13 +146,6 @@
                 android:textSize="20sp"
                 android:layout_gravity="left"
                 />
-
-
-
         </LinearLayout>
-
-
-
     </LinearLayout>
-
 </LinearLayout>

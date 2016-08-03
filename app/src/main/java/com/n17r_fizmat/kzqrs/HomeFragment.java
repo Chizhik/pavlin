@@ -152,7 +152,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 }
                 break;
             case R.id.share_button:
-                Intent intent = new Intent(getContext(), ChooseOpinion.class);
+                Intent intent = new Intent(getContext(), ShareActivity.class);
                 startActivity(intent);
                 break;
         }

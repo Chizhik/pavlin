@@ -101,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         profilePic.setImageBitmap(bm);
                     } else {
                         Log.d("ParseException", e.toString());
-                        Toast.makeText(ProfileActivity.this, "Something went wrong while downloading avatar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
