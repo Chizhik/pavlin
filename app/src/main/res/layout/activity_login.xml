@@ -12,10 +12,12 @@
         android:orientation="vertical"
         tools:context="com.n17r_fizmat.kzqrs.LoginActivity">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="150dp">
-        </View>
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:src="@drawable/login_page"/>
+
 
         <EditText
             android:layout_width="match_parent"
