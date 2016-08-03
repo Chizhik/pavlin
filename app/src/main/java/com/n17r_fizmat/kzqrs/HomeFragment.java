@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                         profilePic.setImageBitmap(bm);
                     } else {
                         Log.d("ParseException", e.toString());
-                        Toast.makeText(getContext(), "Something went wrong while downloading avatar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
