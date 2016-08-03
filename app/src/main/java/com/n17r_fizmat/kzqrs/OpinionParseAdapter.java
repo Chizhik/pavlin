@@ -2,14 +2,11 @@ package com.n17r_fizmat.kzqrs;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +14,6 @@ import android.widget.Toast;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -31,7 +27,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
     public OpinionParseAdapter(Context context, final ParseUser receiverUser) {
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
             public ParseQuery create() {
-                ParseQuery query = new ParseQuery("Opinion");
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
                 query.whereEqualTo("receiver", receiverUser);
                 query.orderByDescending("createdAt");
                 return query;
@@ -93,23 +89,8 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
             Log.v("Parse", e.toString());
             e.printStackTrace();
         }
-
-//        profileImage.setOnItemClickListener(new AdapterView.OnItemClickListener());
         return v;
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.rowProfilePic:
-//                Context c = getContext();
-//                Intent profileIntent = new Intent(c, ProfileActivity.class);
-//                Bundle b = new Bundle();
-//                String id = senderUser.getObjectId();
-//                Log.d("ParseUser", "senderUser: " + id);
-//                b.putString("ParseUserId", id);
-//                profileIntent.putExtras(b);
-//                c.startActivity(profileIntent);
-//        }
-//    }
+
 }
