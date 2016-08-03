@@ -35,6 +35,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     private ImageView profilePic;
     private TextView username;
     private Button saveButton;
+    private Button shareButton;
     private EditText first, second, third;
     private ParseUser currentUser = ParseUser.getCurrentUser();
     private Bitmap bm;
@@ -85,6 +86,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         profilePic = (ImageView) v.findViewById(R.id.profileImageHome);
         username = (TextView) v.findViewById(R.id.usernameTextHome);
         saveButton = (Button) v.findViewById(R.id.saveButton);
+        shareButton = (Button) v.findViewById(R.id.share_button);
+        shareButton.setVisibility(View.VISIBLE);
         first = (EditText) v.findViewById(R.id.firstEditText);
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
@@ -105,6 +108,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
             username.setText(currentUser.getUsername());
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
+            shareButton.setOnClickListener(this);
         } else {
             Intent registerIntent = new Intent(getContext(), SettingsActivity.class);
             registerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -147,6 +151,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     listView.setAdapter(mainAdapter);
                     Toast.makeText(getContext(), "Сохранено!", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.share_button:
+                Intent intent = new Intent(getContext(), ChooseOpinion.class);
+                startActivity(intent);
                 break;
         }
     }
