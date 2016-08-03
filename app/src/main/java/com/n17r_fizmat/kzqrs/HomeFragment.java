@@ -82,8 +82,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         View v = getLayoutInflater(savedInstanceState).inflate(R.layout.header_new, null);
         TextView username = (TextView) v.findViewById(R.id.usernameTextHome);
         Button saveButton = (Button) v.findViewById(R.id.saveButton);
-        Button shareButton = (Button) v.findViewById(R.id.share_button);
-        Button settingsButton = (Button) v.findViewById(R.id.settings_button);
+        ImageView shareButton = (ImageView) v.findViewById(R.id.share_button);
+        ImageView settingsButton = (ImageView) v.findViewById(R.id.settings_button);
         shareButton.setVisibility(View.VISIBLE);
         settingsButton.setVisibility(View.VISIBLE);
         profilePic = (ImageView) v.findViewById(R.id.profileImageHome);

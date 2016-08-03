@@ -8,51 +8,63 @@
         android:background="@drawable/lifee">
     </FrameLayout>
 
-    <Button
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/settings_black"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="55dp"
-        android:layout_marginRight="55dp"
-        android:layout_marginTop="160dp"
-        android:id="@+id/settings_button"
-        android:visibility="visible"
-        android:layout_alignParentTop="true"/>
 
-    <Button
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="160dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="55dp"
-        android:layout_marginStart="55dp"
-        android:id="@+id/share_button"
-        android:visibility="visible"
-        android:background="@drawable/instagram"
-        android:layout_alignParentTop="true"
-        android:gravity="center" />
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profileImageHome"
-            android:src="@drawable/profile_pic"
-            app:riv_corner_radius="30dip"
-            app:riv_border_width="5dip"
-            android:layout_height="100dp"
-            android:layout_width="100dp"
-            app:riv_border_color="#fff"
-            app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="100dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:id="@+id/share_button"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:visibility="invisible"
+                android:src="@drawable/instagram2"
+                android:gravity="center"
+                android:contentDescription="@string/share_on_instagram" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profileImageHome"
+                android:layout_weight="1"
+                android:src="@drawable/profile_pic"
+                app:riv_corner_radius="30dip"
+                app:riv_border_width="5dip"
+                android:layout_height="100dp"
+                android:layout_width="100dp"
+                app:riv_border_color="#fff"
+                app:riv_mutate_background="true"
+                app:riv_tile_mode="repeat"
+                app:riv_oval="true"
+                android:layout_gravity="center">
+            </com.makeramen.roundedimageview.RoundedImageView>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/settings4"
+                android:id="@+id/settings_button"
+                android:visibility="invisible"
+                android:contentDescription="@string/settingsButton" />
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"
