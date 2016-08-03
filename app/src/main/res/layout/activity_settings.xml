@@ -40,20 +40,19 @@
             android:padding="16dp"
             android:textSize="15sp"
             android:id="@+id/nameEditText"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="20dp"
             android:hint="User Name"
             android:textColorHint="#73787b"
             android:gravity="start"
             />
 
+
         <Button
             android:layout_width="match_parent"
-            android:layout_weight="5"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gradiant"
-            android:text="S"
-            android:textSize="15sp"
-            android:padding="16dp"
+            android:layout_weight="8"
+            android:layout_height="36dp"
+            android:background="@drawable/save_grey"
+            android:textColor="#fff"
             android:id="@+id/settingsSaveButton"
             android:gravity="center"
             />
@@ -73,6 +72,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:text="@string/LogoutButtonMenu"
+        android:textColor="#fff"
         android:background="@drawable/gradiant"
         android:id="@+id/settingsLogoutButton"
         android:textSize="20sp"

@@ -33,9 +33,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     private OpinionParseAdapter mainAdapter;
     private ListView listView;
     private ImageView profilePic;
-    private TextView username;
-    private Button saveButton;
-    private Button shareButton;
     private EditText first, second, third;
     private ParseUser currentUser = ParseUser.getCurrentUser();
     private Bitmap bm;
@@ -83,11 +80,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     private View createHeader(Bundle savedInstanceState) {
         View v = getLayoutInflater(savedInstanceState).inflate(R.layout.header_new, null);
-        profilePic = (ImageView) v.findViewById(R.id.profileImageHome);
-        username = (TextView) v.findViewById(R.id.usernameTextHome);
-        saveButton = (Button) v.findViewById(R.id.saveButton);
-        shareButton = (Button) v.findViewById(R.id.share_button);
+        TextView username = (TextView) v.findViewById(R.id.usernameTextHome);
+        Button saveButton = (Button) v.findViewById(R.id.saveButton);
+        Button shareButton = (Button) v.findViewById(R.id.share_button);
+        Button settingsButton = (Button) v.findViewById(R.id.settings_button);
         shareButton.setVisibility(View.VISIBLE);
+        settingsButton.setVisibility(View.VISIBLE);
+        profilePic = (ImageView) v.findViewById(R.id.profileImageHome);
         first = (EditText) v.findViewById(R.id.firstEditText);
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
@@ -106,9 +105,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 }
             });
             username.setText(currentUser.getUsername());
-            profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
             shareButton.setOnClickListener(this);
+            settingsButton.setOnClickListener(this);
         } else {
             Intent registerIntent = new Intent(getContext(), SettingsActivity.class);
             registerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -121,7 +120,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 //         Inflate the layout for this fragment
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.profileImageHome:
+            case R.id.settings_button:
                 Intent intentHome = new Intent(getContext(), SettingsActivity.class);
                 startActivity(intentHome);
                 break;
