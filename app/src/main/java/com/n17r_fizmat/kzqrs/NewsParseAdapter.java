@@ -1,6 +1,5 @@
 package com.n17r_fizmat.kzqrs;
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,15 +19,15 @@ import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
 /**
- * Created by Alisher on 7/14/2016.
+ * Created by Alisher on 8/4/2016.
  */
-public class OpinionParseAdapter extends ParseQueryAdapter {
-    ParseUser senderUser;
-    public OpinionParseAdapter(Context context, final ParseUser receiverUser) {
+public class NewsParseAdapter extends ParseQueryAdapter {
+    private ParseUser senderUser;
+    private ParseUser receiverUser;
+    public NewsParseAdapter(Context context) {
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
             public ParseQuery create() {
                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
-                query.whereEqualTo("receiver", receiverUser);
                 query.orderByDescending("createdAt");
                 return query;
             }
@@ -38,7 +37,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
         if (v == null) {
-            v = View.inflate(getContext(), R.layout.rowlayout, null);
+            v = View.inflate(getContext(), R.layout.news_rowlayout, null);
         }
         super.getItemView(object, v, parent);
 
@@ -51,24 +50,35 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
 
         try {
             senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
+            receiverUser = (ParseUser) object.fetchIfNeeded().get("receiver");
 //            imageFile = senderUser.fetchIfNeeded().getParseFile("avatar");
-            ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
-            avatar.getDataInBackground(new GetDataCallback() {
+            ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
+            final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar_small");
+            avatarSender.getDataInBackground(new GetDataCallback() {
                 @Override
-                public void done(byte[] data, ParseException e) {
+                public void done(final byte[] dataSender, ParseException e) {
                     if (e == null) {
-                        Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
-                        profileImage.setImageBitmap(bm);
+                        avatarReceiver.getDataInBackground(new GetDataCallback() {
+                            @Override
+                            public void done(byte[] dataReceiver, ParseException e) {
+                                if (e == null) {
+                                    Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
+                                    Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
+                                    profileImage.setImageBitmap(bmSender);
+
+                                } else {
+                                    Log.d("ParseException", e.toString());
+                                    Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     } else {
                         Log.d("ParseException", e.toString());
                         Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-//            if (imageFile != null) {
-//                profilePic.setParseFile(imageFile);
-//                profilePic.loadInBackground();
-//            }
+
             Object name = senderUser.fetchIfNeeded().getUsername();
             Object f = object.fetchIfNeeded().get("firstWord");
             Object s = object.fetchIfNeeded().get("secondWord");
@@ -91,6 +101,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
         }
         return v;
     }
+
 
 
 }

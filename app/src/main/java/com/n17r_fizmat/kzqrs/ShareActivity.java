@@ -1,5 +1,6 @@
 package com.n17r_fizmat.kzqrs;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         lin_share = (LinearLayout) findViewById(R.id.linear_share);
         share_button = (Button) findViewById(R.id.share_insta);
         profile = (ImageView) findViewById(R.id.share_profile);
+        username = (TextView) findViewById(R.id.share_username);
 
         if (user.getParseFile("avatar") != null) {
             ParseFile avatar = (ParseFile) user.get("avatar");
@@ -59,6 +61,16 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
             });
+            try {
+                Object name = user.fetchIfNeeded().getUsername();
+                if (name != null) {
+                    username.setText(name.toString());
+                }
+            } catch (ParseException e) {
+                Log.v("Parse", e.toString());
+                e.printStackTrace();
+            }
+
 //            username.setText(user.getUsername());
             share_button.setOnClickListener(this);
         } else {
@@ -77,15 +89,40 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         int id = view.getId();
         switch (id) {
             case R.id.share_insta:
-                File file = saveBitMap(this, lin_share);    //which view you want to pass that view as parameter
-                if (file != null) {
-                    Log.i("TAG", "Drawing saved to the gallery!");
-                    String type = "image/*";
-                    String mediaPath = file.getAbsolutePath();
-                    createInstagramIntent(type, mediaPath);
-                } else {
-                    Log.i("TAG", "Oops! Image could not be saved.");
-                }
+                final ProgressDialog pd = new ProgressDialog(this);
+                pd.setTitle("Загрузка");
+                pd.setMessage("Пожалуйста подождите");
+                pd.show();
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        File file = saveBitMap(ShareActivity.this, lin_share);
+                        if (file != null) {
+                            Log.i("TAG", "Drawing saved to the gallery!");
+                            String type = "image/*";
+                            String mediaPath = file.getAbsolutePath();
+                            createInstagramIntent(type, mediaPath);
+
+                        } else {
+                            Log.i("TAG", "Oops! Image could not be saved.");
+                        }
+                        pd.dismiss();
+                    }
+                };
+                thread.start();
+                Intent intent = new Intent(ShareActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+//                File file = saveBitMap(this, lin_share);    //which view you want to pass that view as parameter
+//                if (file != null) {
+//                    Log.i("TAG", "Drawing saved to the gallery!");
+//                    String type = "image/*";
+//                    String mediaPath = file.getAbsolutePath();
+//                    createInstagramIntent(type, mediaPath);
+//                } else {
+//                    Log.i("TAG", "Oops! Image could not be saved.");
+//                }
                 break;
             default:
                 break;
