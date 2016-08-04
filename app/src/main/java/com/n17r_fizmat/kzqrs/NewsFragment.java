@@ -14,7 +14,7 @@ import android.widget.ListView;
  */
 public class NewsFragment extends Fragment {
     ListView news_list;
-
+    NewsParseAdapter mainAdapter;
 
 
     public NewsFragment() {

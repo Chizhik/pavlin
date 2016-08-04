@@ -42,8 +42,10 @@ public class NewsParseAdapter extends ParseQueryAdapter {
         super.getItemView(object, v, parent);
 
 //        ParseImageView profilePic = (ParseImageView) v.findViewById(R.id.rowParseImage);
-        final ImageView profileImage = (ImageView) v.findViewById(R.id.rowProfilePic);
-        TextView username = (TextView) v.findViewById(R.id.rowUsername);
+        final ImageView profileSender = (ImageView) v.findViewById(R.id.rowSenderProfilePic);
+        final ImageView profileReceiver = (ImageView) v.findViewById(R.id.rowReceiverProfilePic);
+        TextView usernameSender = (TextView) v.findViewById(R.id.rowSenderUsername);
+        TextView usernameReceiver = (TextView) v.findViewById(R.id.rowReceiverUsername);
         TextView firstWord = (TextView) v.findViewById(R.id.rowFirstWord);
         TextView secondWord = (TextView) v.findViewById(R.id.rowSecondWord);
         TextView thirdWord = (TextView) v.findViewById(R.id.rowThirdWord);
@@ -51,7 +53,6 @@ public class NewsParseAdapter extends ParseQueryAdapter {
         try {
             senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
             receiverUser = (ParseUser) object.fetchIfNeeded().get("receiver");
-//            imageFile = senderUser.fetchIfNeeded().getParseFile("avatar");
             ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
             final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar_small");
             avatarSender.getDataInBackground(new GetDataCallback() {
@@ -64,8 +65,8 @@ public class NewsParseAdapter extends ParseQueryAdapter {
                                 if (e == null) {
                                     Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
                                     Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
-                                    profileImage.setImageBitmap(bmSender);
-
+                                    profileSender.setImageBitmap(bmSender);
+                                    profileReceiver.setImageBitmap(bmReceiver);
                                 } else {
                                     Log.d("ParseException", e.toString());
                                     Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
@@ -79,12 +80,16 @@ public class NewsParseAdapter extends ParseQueryAdapter {
                 }
             });
 
-            Object name = senderUser.fetchIfNeeded().getUsername();
+            Object nameSender = senderUser.fetchIfNeeded().getUsername();
+            Object nameReceiver = receiverUser.fetchIfNeeded().getUsername();
             Object f = object.fetchIfNeeded().get("firstWord");
             Object s = object.fetchIfNeeded().get("secondWord");
             Object t = object.fetchIfNeeded().get("thirdWord");
-            if (name != null) {
-                username.setText(name.toString());
+            if (nameSender != null) {
+                usernameSender.setText(nameSender.toString());
+            }
+            if (nameReceiver != null) {
+                usernameReceiver.setText(nameReceiver.toString());
             }
             if (f != null) {
                 firstWord.setText(f.toString());
