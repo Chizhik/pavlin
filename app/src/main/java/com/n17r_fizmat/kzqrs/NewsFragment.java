@@ -26,7 +26,11 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news, container, false);
+        View v = inflater.inflate(R.layout.fragment_news, container, false);
+        news_list = (ListView) v.findViewById(R.id.news_list);
+        mainAdapter = new NewsParseAdapter(getContext());
+        news_list.setAdapter(mainAdapter);
+        return v;
     }
 
 }
