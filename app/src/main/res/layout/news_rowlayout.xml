@@ -8,71 +8,95 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/rowSenderProfilePic"
-            android:src="@drawable/usericon"
-            app:riv_corner_radius="30dip"
-            app:riv_border_width="2dp"
-            android:layout_height="60dp"
-            android:layout_width="60dp"
-            app:riv_border_color="#fff"
-            app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="true"
-            android:layout_gravity="start" />
-        <TextView
+        android:orientation="vertical">
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sender"
-            android:maxWidth="120dp"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#363147"
-            android:id="@+id/rowSenderUsername"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center">
 
-    <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:src="@drawable/arrow"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/rowSenderProfilePic"
+                    android:src="@drawable/usericon"
+                    app:riv_corner_radius="30dip"
+                    app:riv_border_width="2dp"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    app:riv_border_color="#fff"
+                    app:riv_mutate_background="true"
+                    app:riv_tile_mode="repeat"
+                    app:riv_oval="true"
+                    android:layout_gravity="start" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="sender"
+                    android:gravity="center"
+                    android:maxWidth="120dp"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#363147"
+                    android:id="@+id/rowSenderUsername"/>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/rowReceiverProfilePic"
-            android:src="@drawable/usericon"
-            app:riv_corner_radius="30dip"
-            app:riv_border_width="2dp"
-            android:layout_height="60dp"
-            android:layout_width="60dp"
-            app:riv_border_color="#fff"
-            app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="true"
-            android:layout_gravity="start" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/arrow"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/rowReceiverProfilePic"
+                    android:src="@drawable/usericon"
+                    app:riv_corner_radius="30dip"
+                    app:riv_border_width="2dp"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    app:riv_border_color="#fff"
+                    app:riv_mutate_background="true"
+                    app:riv_tile_mode="repeat"
+                    app:riv_oval="true"
+                    android:layout_gravity="start" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="receiver"
+                    android:maxWidth="120dp"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#363147"
+                    android:id="@+id/rowReceiverUsername"/>
+            </LinearLayout>
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="receiver"
-            android:maxWidth="120dp"
+            android:layout_height="match_parent"
+            android:id="@+id/news_time_text"
             android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#363147"
-            android:id="@+id/rowReceiverUsername"/>
+            android:text="time"/>
+
     </LinearLayout>
 
     <View

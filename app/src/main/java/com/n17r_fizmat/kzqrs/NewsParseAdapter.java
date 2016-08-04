@@ -3,6 +3,7 @@ package com.n17r_fizmat.kzqrs;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+
+import java.util.Date;
 
 /**
  * Created by Alisher on 8/4/2016.
@@ -44,6 +47,7 @@ public class NewsParseAdapter extends ParseQueryAdapter {
 //        ParseImageView profilePic = (ParseImageView) v.findViewById(R.id.rowParseImage);
         final ImageView profileSender = (ImageView) v.findViewById(R.id.rowSenderProfilePic);
         final ImageView profileReceiver = (ImageView) v.findViewById(R.id.rowReceiverProfilePic);
+        TextView time = (TextView) v.findViewById(R.id.news_time_text);
         TextView usernameSender = (TextView) v.findViewById(R.id.rowSenderUsername);
         TextView usernameReceiver = (TextView) v.findViewById(R.id.rowReceiverUsername);
         TextView firstWord = (TextView) v.findViewById(R.id.rowFirstWord);
@@ -79,16 +83,21 @@ public class NewsParseAdapter extends ParseQueryAdapter {
                     }
                 }
             });
-
+            Date time_s = object.fetchIfNeeded().getCreatedAt();
             Object nameSender = senderUser.fetchIfNeeded().getUsername();
             Object nameReceiver = receiverUser.fetchIfNeeded().getUsername();
             Object f = object.fetchIfNeeded().get("firstWord");
             Object s = object.fetchIfNeeded().get("secondWord");
             Object t = object.fetchIfNeeded().get("thirdWord");
+            if (time_s != null) {
+                String str = (String) DateUtils.getRelativeDateTimeString(getContext(), time_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
+                time.setText(str);
+            }
             if (nameSender != null) {
                 usernameSender.setText(nameSender.toString());
             }
             if (nameReceiver != null) {
+
                 usernameReceiver.setText(nameReceiver.toString());
             }
             if (f != null) {
