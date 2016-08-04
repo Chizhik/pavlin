@@ -26,7 +26,9 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ShareActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout lin_share;
@@ -78,6 +80,9 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                 File file = saveBitMap(this, lin_share);    //which view you want to pass that view as parameter
                 if (file != null) {
                     Log.i("TAG", "Drawing saved to the gallery!");
+                    String type = "image/*";
+                    String mediaPath = file.getAbsolutePath();
+                    createInstagramIntent(type, mediaPath);
                 } else {
                     Log.i("TAG", "Oops! Image could not be saved.");
                 }
@@ -88,18 +93,19 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private File saveBitMap(Context context, View drawView){
-        File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"Share");
+        String appDirectoryName = "pavlin";
+        File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)+ File.separator + appDirectoryName + File.separator);
         if (!pictureFileDir.exists()) {
             boolean isDirectoryCreated = pictureFileDir.mkdirs();
             if(!isDirectoryCreated)
-                Log.i("ATG", "Can't create directory to save the image");
+                Log.i("TAG", "Can't create directory to save the image");
             return null;
         }
-        String filename = pictureFileDir.getPath() +File.separator+ System.currentTimeMillis()+".jpg";
+        String filename = pictureFileDir.getPath() +File.separator+ "share.png";
         File pictureFile = new File(filename);
         Bitmap bitmap =getBitmapFromView(drawView);
         try {
-            pictureFile.createNewFile();
+//            pictureFile.createNewFile();
             FileOutputStream oStream = new FileOutputStream(pictureFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, oStream);
             oStream.flush();
@@ -142,5 +148,24 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createInstagramIntent(String type, String mediaPath){
+
+        // Create the new Intent using the 'Send' action.
+        Intent share = new Intent(Intent.ACTION_SEND);
+
+        // Set the MIME type
+        share.setType(type);
+
+        // Create the URI from the media
+        File media = new File(mediaPath);
+        Uri uri = Uri.fromFile(media);
+
+        // Add the URI to the Intent.
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+
+        // Broadcast the Intent.
+        startActivity(Intent.createChooser(share, "Share to"));
     }
 }
