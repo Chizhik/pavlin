@@ -1,6 +1,7 @@
 package com.n17r_fizmat.kzqrs;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import java.io.File;
 import java.util.Date;
 
 
