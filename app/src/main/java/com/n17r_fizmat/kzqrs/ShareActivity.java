@@ -110,10 +110,10 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                     }
                 };
                 thread.start();
-                Intent intent = new Intent(ShareActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+//                Intent intent = new Intent(ShareActivity.this, MainActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//                finish();
 //                File file = saveBitMap(this, lin_share);    //which view you want to pass that view as parameter
 //                if (file != null) {
 //                    Log.i("TAG", "Drawing saved to the gallery!");
