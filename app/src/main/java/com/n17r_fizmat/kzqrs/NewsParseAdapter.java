@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,26 +40,35 @@ public class NewsParseAdapter extends ParseQueryAdapter {
 
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
+        NewsHolder holder = null;
+
         if (v == null) {
             v = View.inflate(getContext(), R.layout.news_rowlayout, null);
+            super.getItemView(object, v, parent);
+            holder = new NewsHolder();
+            holder.profileSender = (ImageView) v.findViewById(R.id.rowSenderProfilePic);
+            holder.profileReceiver = (ImageView) v.findViewById(R.id.rowReceiverProfilePic);
+            holder.senderClick = (LinearLayout) v.findViewById(R.id.senderClick);
+            holder.receiverClick = (LinearLayout) v.findViewById(R.id.receiverClick);
+            holder.time = (TextView) v.findViewById(R.id.news_time_text);
+            holder.usernameSender = (TextView) v.findViewById(R.id.rowSenderUsername);
+            holder.usernameReceiver = (TextView) v.findViewById(R.id.rowReceiverUsername);
+            holder.firstWord = (TextView) v.findViewById(R.id.rowFirstWord);
+            holder.secondWord = (TextView) v.findViewById(R.id.rowSecondWord);
+            holder.thirdWord = (TextView) v.findViewById(R.id.rowThirdWord);
+//            holder.senderClick.setOnClickListener(senderClickListener);
+//            holder.receiverClick.setOnClickListener(receiverClickListener);
+            v.setTag(holder);
+        } else {
+            holder = (NewsHolder) v.getTag();
         }
-        super.getItemView(object, v, parent);
-
-//        ParseImageView profilePic = (ParseImageView) v.findViewById(R.id.rowParseImage);
-        final ImageView profileSender = (ImageView) v.findViewById(R.id.rowSenderProfilePic);
-        final ImageView profileReceiver = (ImageView) v.findViewById(R.id.rowReceiverProfilePic);
-        TextView time = (TextView) v.findViewById(R.id.news_time_text);
-        TextView usernameSender = (TextView) v.findViewById(R.id.rowSenderUsername);
-        TextView usernameReceiver = (TextView) v.findViewById(R.id.rowReceiverUsername);
-        TextView firstWord = (TextView) v.findViewById(R.id.rowFirstWord);
-        TextView secondWord = (TextView) v.findViewById(R.id.rowSecondWord);
-        TextView thirdWord = (TextView) v.findViewById(R.id.rowThirdWord);
 
         try {
             senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
             receiverUser = (ParseUser) object.fetchIfNeeded().get("receiver");
             ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
             final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar_small");
+            final NewsHolder finalHolder = holder;
             avatarSender.getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(final byte[] dataSender, ParseException e) {
@@ -69,8 +79,8 @@ public class NewsParseAdapter extends ParseQueryAdapter {
                                 if (e == null) {
                                     Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
                                     Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
-                                    profileSender.setImageBitmap(bmSender);
-                                    profileReceiver.setImageBitmap(bmReceiver);
+                                    finalHolder.profileSender.setImageBitmap(bmSender);
+                                    finalHolder.profileReceiver.setImageBitmap(bmReceiver);
                                 } else {
                                     Log.d("ParseException", e.toString());
                                     Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
@@ -91,30 +101,32 @@ public class NewsParseAdapter extends ParseQueryAdapter {
             Object t = object.fetchIfNeeded().get("thirdWord");
             if (time_s != null) {
                 String str = (String) DateUtils.getRelativeDateTimeString(getContext(), time_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
-                time.setText(str);
+                holder.time.setText(str);
             }
             if (nameSender != null) {
-                usernameSender.setText(nameSender.toString());
+                holder.usernameSender.setText(nameSender.toString());
             }
             if (nameReceiver != null) {
 
-                usernameReceiver.setText(nameReceiver.toString());
+                holder.usernameReceiver.setText(nameReceiver.toString());
             }
             if (f != null) {
-                firstWord.setText(f.toString());
+                holder.firstWord.setText(f.toString());
             }
             if (s != null) {
-                secondWord.setText(s.toString());
+                holder.secondWord.setText(s.toString());
             }
             if (t != null) {
-                thirdWord.setText(t.toString());
+                holder.thirdWord.setText(t.toString());
             }
         } catch (ParseException e) {
             Log.v("Parse", e.toString());
             e.printStackTrace();
         }
+
         return v;
     }
+
 
 
 
