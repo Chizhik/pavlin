@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragments(new NewsFragment(), "News");
-        viewPagerAdapter.addFragments(new HomeFragment(), "Home");
+        viewPagerAdapter.addFragments(new HomeFragment(), "Profile");
         viewPagerAdapter.addFragments(new SearchFragment(), "Search");
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setOffscreenPageLimit(3);

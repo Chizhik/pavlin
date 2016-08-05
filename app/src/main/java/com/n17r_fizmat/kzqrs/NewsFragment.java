@@ -84,21 +84,19 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             NewsHolder holder = null;
 
             if (v == null) {
-                v = View.inflate(getContext(), R.layout.news_rowlayout, null);
+                v = View.inflate(getContext(), R.layout.row_news, null);
                 super.getItemView(object, v, parent);
                 holder = new NewsHolder();
                 holder.profileSender = (ImageView) v.findViewById(R.id.rowSenderProfilePic);
                 holder.profileReceiver = (ImageView) v.findViewById(R.id.rowReceiverProfilePic);
-                holder.senderClick = (LinearLayout) v.findViewById(R.id.senderClick);
-                holder.receiverClick = (LinearLayout) v.findViewById(R.id.receiverClick);
                 holder.time = (TextView) v.findViewById(R.id.news_time_text);
                 holder.usernameSender = (TextView) v.findViewById(R.id.rowSenderUsername);
                 holder.usernameReceiver = (TextView) v.findViewById(R.id.rowReceiverUsername);
                 holder.firstWord = (TextView) v.findViewById(R.id.rowFirstWord);
                 holder.secondWord = (TextView) v.findViewById(R.id.rowSecondWord);
                 holder.thirdWord = (TextView) v.findViewById(R.id.rowThirdWord);
-                holder.senderClick.setOnClickListener(senderClickListener);
-                holder.receiverClick.setOnClickListener(receiverClickListener);
+                holder.profileSender.setOnClickListener(senderClickListener);
+                holder.profileReceiver.setOnClickListener(receiverClickListener);
                 v.setTag(holder);
             } else {
                 holder = (NewsHolder) v.getTag();
@@ -108,7 +106,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
                 receiverUser = (ParseUser) object.fetchIfNeeded().get("receiver");
                 ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
-                final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar_small");
+                final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar");
                 final NewsHolder finalHolder = holder;
                 avatarSender.getDataInBackground(new GetDataCallback() {
                     @Override

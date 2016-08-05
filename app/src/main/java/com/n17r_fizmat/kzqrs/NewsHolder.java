@@ -10,8 +10,6 @@ import android.widget.TextView;
 public class NewsHolder {
     public ImageView profileSender;
     public ImageView profileReceiver;
-    public LinearLayout senderClick;
-    public LinearLayout receiverClick;
     public TextView time;
     public TextView usernameSender;
     public TextView usernameReceiver;
