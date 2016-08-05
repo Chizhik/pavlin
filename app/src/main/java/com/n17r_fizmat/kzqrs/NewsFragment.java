@@ -85,7 +85,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             if (v == null) {
                 v = View.inflate(getContext(), R.layout.news_rowlayout, null);
-//                super.getItemView(object, v, parent);
+                super.getItemView(object, v, parent);
                 holder = new NewsHolder();
                 holder.profileSender = (ImageView) v.findViewById(R.id.rowSenderProfilePic);
                 holder.profileReceiver = (ImageView) v.findViewById(R.id.rowReceiverProfilePic);
