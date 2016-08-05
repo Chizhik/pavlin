@@ -11,6 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -99,6 +102,11 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                         File file = saveBitMap(ShareActivity.this, lin_share);
                         if (file != null) {
                             Log.i("TAG", "Drawing saved to the gallery!");
+                            ShareActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(ShareActivity.this, "Изображение сохранено", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             String type = "image/*";
                             String mediaPath = file.getAbsolutePath();
                             createInstagramIntent(type, mediaPath);
@@ -130,12 +138,27 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private File saveBitMap(Context context, View drawView){
+        if (!isExternalStorageWritable()) {
+            ShareActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(ShareActivity.this, "External Storage не доступен", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return null;
+        }
         String appDirectoryName = "pavlin";
-        File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)+ File.separator + appDirectoryName + File.separator);
+//        + File.separator + appDirectoryName + File.separator
+        File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appDirectoryName);
         if (!pictureFileDir.exists()) {
             boolean isDirectoryCreated = pictureFileDir.mkdirs();
-            if(!isDirectoryCreated)
+            if(!isDirectoryCreated) {
                 Log.i("TAG", "Can't create directory to save the image");
+                ShareActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(ShareActivity.this, "Ошибка при создании directory", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             return null;
         }
         String filename = pictureFileDir.getPath() +File.separator+ "share.png";
@@ -150,6 +173,11 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         } catch (java.io.IOException e) {
             e.printStackTrace();
             Log.i("TAG", "There was an issue saving the image.");
+            ShareActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(ShareActivity.this, "Произошла ошибка, попробуйте еще раз", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         scanGallery( context,pictureFile.getAbsolutePath());
         return pictureFile;
@@ -204,5 +232,10 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
 
         // Broadcast the Intent.
         startActivity(Intent.createChooser(share, "Share to"));
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 }
