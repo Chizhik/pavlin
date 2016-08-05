@@ -22,11 +22,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragments(new HomeFragment(), "Home");
         viewPagerAdapter.addFragments(new NewsFragment(), "News");
+        viewPagerAdapter.addFragments(new HomeFragment(), "Home");
         viewPagerAdapter.addFragments(new SearchFragment(), "Search");
         viewPager.setAdapter(viewPagerAdapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
 
