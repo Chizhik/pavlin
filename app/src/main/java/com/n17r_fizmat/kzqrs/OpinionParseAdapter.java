@@ -41,7 +41,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
         if (v == null) {
-            v = View.inflate(getContext(), R.layout.rowlayout, null);
+            v = View.inflate(getContext(), R.layout.row_opinion, null);
         }
         super.getItemView(object, v, parent);
 
