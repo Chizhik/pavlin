@@ -3,18 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    card_view:cardElevation="10dp"
+    card_view:cardElevation="4dp"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    card_view:cardCornerRadius="2dp">
+    card_view:cardCornerRadius="2dp"
+    card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginTop="3dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <com.makeramen.roundedimageview.RoundedImageView
@@ -22,10 +20,10 @@
             android:id="@+id/rowProfilePic"
             android:src="@drawable/profile_pic"
             app:riv_corner_radius="30dip"
-            app:riv_border_width="2dp"
+            app:riv_border_width="1dp"
             android:layout_height="50dp"
             android:layout_width="50dp"
-            app:riv_border_color="#fff"
+            app:riv_border_color="#363147"
             app:riv_mutate_background="true"
             app:riv_tile_mode="repeat"
             app:riv_oval="true"
@@ -54,21 +52,21 @@
                 android:id="@+id/rowFirstWord"
                 android:text="@string/hint1"
                 android:textSize="18sp"
-                android:gravity="center"/>
+                android:gravity="left"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rowSecondWord"
                 android:text="@string/hint1"
                 android:textSize="18sp"
-                android:gravity="center"/>
+                android:gravity="left"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rowThirdWord"
                 android:text="@string/hint1"
                 android:textSize="18sp"
-                android:gravity="center"/>
+                android:gravity="left"/>
 
         </LinearLayout>
         <View
