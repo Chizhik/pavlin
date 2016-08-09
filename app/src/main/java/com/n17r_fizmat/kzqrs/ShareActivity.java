@@ -148,7 +148,7 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         }
         String appDirectoryName = "pavlin";
 //        + File.separator + appDirectoryName + File.separator
-        File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appDirectoryName);
+        File pictureFileDir = new File(Environment.getExternalStorageDirectory(), appDirectoryName);
         if (!pictureFileDir.exists()) {
             boolean isDirectoryCreated = pictureFileDir.mkdirs();
             if(!isDirectoryCreated) {
