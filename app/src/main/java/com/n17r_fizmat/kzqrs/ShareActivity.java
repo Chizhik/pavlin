@@ -147,22 +147,24 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
             return null;
         }
         String appDirectoryName = "pavlin";
+        String mPath = Environment.getExternalStorageDirectory().toString() + "/" + appDirectoryName + ".png";
 //        + File.separator + appDirectoryName + File.separator
-        File pictureFileDir = new File(Environment.getExternalStorageDirectory(), appDirectoryName);
-        if (!pictureFileDir.exists()) {
-            boolean isDirectoryCreated = pictureFileDir.mkdirs();
-            if(!isDirectoryCreated) {
-                Log.i("TAG", "Can't create directory to save the image");
-                ShareActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(ShareActivity.this, "Ошибка при создании directory", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            return null;
-        }
-        String filename = pictureFileDir.getPath() +File.separator+ "share.png";
-        File pictureFile = new File(filename);
+//        File pictureFileDir = new File(Environment.getExternalStorageDirectory(), appDirectoryName);
+//        if (!pictureFileDir.exists()) {
+//            boolean isDirectoryCreated = pictureFileDir.mkdirs();
+//            if(!isDirectoryCreated) {
+//                Log.i("TAG", "Can't create directory to save the image");
+//                ShareActivity.this.runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        Toast.makeText(ShareActivity.this, "Ошибка при создании directory", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//            return null;
+//        }
+//        String filename = pictureFileDir.getPath() +File.separator+ "share.png";
+//        File pictureFile = new File(filename);
+        File pictureFile = new File(mPath);
         Bitmap bitmap =getBitmapFromView(drawView);
         try {
 //            pictureFile.createNewFile();
