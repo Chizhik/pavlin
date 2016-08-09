@@ -200,13 +200,16 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 ParseObject object = (ParseObject) news_list.getItemAtPosition(position);
                 try {
                     Context c = getContext();
-                    ParseUser senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
-                    Intent profileIntent = new Intent(c, ProfileActivity.class);
-                    Bundle b = new Bundle();
-                    String id = senderUser.getObjectId();
-                    b.putString("ParseUserId", id);
-                    profileIntent.putExtras(b);
-                    c.startActivity(profileIntent);
+                    Object temp = object.fetchIfNeeded().get("sender");
+                    if (temp != JSONObject.NULL) {
+                        ParseUser senderUser = (ParseUser) temp;
+                        Intent profileIntent = new Intent(c, ProfileActivity.class);
+                        Bundle b = new Bundle();
+                        String id = senderUser.getObjectId();
+                        b.putString("ParseUserId", id);
+                        profileIntent.putExtras(b);
+                        c.startActivity(profileIntent);
+                    }
                 } catch (ParseException e) {
                     Log.v("Parse", e.toString());
                     e.printStackTrace();

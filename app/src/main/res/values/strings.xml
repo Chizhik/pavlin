@@ -13,7 +13,7 @@
     <string name="username">Имя пользователя</string>
     <string name="signInButtonName">Sign In</string>
     <string name="signUpButtonName">Sign Up</string>
-    <string name="LogoutButtonMenu">Log out</string>
+    <string name="LogoutButtonMenu">Выйти</string>
     <string name="yesButton">Yes</string>
     <string name="noButton">No</string>
     <string name="homeButtonName">Home</string>

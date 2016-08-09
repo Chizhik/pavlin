@@ -26,6 +26,8 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import org.json.JSONObject;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -175,14 +177,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         ParseObject object = (ParseObject) listView.getItemAtPosition(i);
         try {
             Context c = getContext();
-            ParseUser senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
-            Intent profileIntent = new Intent(c, ProfileActivity.class);
-            Bundle b = new Bundle();
-            String id = senderUser.getObjectId();
-            Log.d("ParseUser", "senderUser: " + id);
-            b.putString("ParseUserId", id);
-            profileIntent.putExtras(b);
-            c.startActivity(profileIntent);
+            Object temp = object.fetchIfNeeded().get("sender");
+            if (temp != JSONObject.NULL) {
+                ParseUser senderUser = (ParseUser) temp;
+                Intent profileIntent = new Intent(c, ProfileActivity.class);
+                Bundle b = new Bundle();
+                String id = senderUser.getObjectId();
+                Log.d("ParseUser", "senderUser: " + id);
+                b.putString("ParseUserId", id);
+                profileIntent.putExtras(b);
+                c.startActivity(profileIntent);
+            }
         } catch (ParseException e) {
             Log.v("Parse", e.toString());
             e.printStackTrace();

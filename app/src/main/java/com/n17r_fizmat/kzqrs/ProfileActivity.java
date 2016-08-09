@@ -157,14 +157,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ParseObject object = (ParseObject) listView.getItemAtPosition(i);
         try {
-            ParseUser senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
-            Intent profileIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
-            Bundle b = new Bundle();
-            String id = senderUser.getObjectId();
-            Log.d("ParseUser", "senderUser: " + id);
-            b.putString("ParseUserId", id);
-            profileIntent.putExtras(b);
-            ProfileActivity.this.startActivity(profileIntent);
+            Object temp = object.fetchIfNeeded().get("sender");
+            if (temp != JSONObject.NULL) {
+                ParseUser senderUser = (ParseUser) temp;
+                Intent profileIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
+                Bundle b = new Bundle();
+                String id = senderUser.getObjectId();
+                Log.d("ParseUser", "senderUser: " + id);
+                b.putString("ParseUserId", id);
+                profileIntent.putExtras(b);
+                ProfileActivity.this.startActivity(profileIntent);
+            }
         } catch (ParseException e) {
             Log.v("Parse", e.toString());
             e.printStackTrace();
