@@ -208,7 +208,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 Bitmap selectedBitmap = extras.getParcelable("data");
                 // Set The Bitmap Data To ImageView
                 bm_small = Bitmap.createScaledBitmap(selectedBitmap, 100, 100, false);
-                bm = Bitmap.createScaledBitmap(selectedBitmap, 300, 300, false);
+                bm = Bitmap.createScaledBitmap(selectedBitmap, 350, 350, false);
                 profileImage.setImageBitmap(bm);
 //                profileImage.setScaleType(ImageView.ScaleType.FIT_XY);
                 imageChanged = true;
@@ -232,8 +232,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             cropIntent.putExtra("aspectX", 1);
             cropIntent.putExtra("aspectY", 1);
             // indicate output X and Y
-            cropIntent.putExtra("outputX", 350);
-            cropIntent.putExtra("outputY", 350);
+//            cropIntent.putExtra("outputX", 350);
+//            cropIntent.putExtra("outputY", 350);
 
             // retrieve data on return
             cropIntent.putExtra("return-data", true);

@@ -194,7 +194,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 Bitmap selectedBitmap = extras.getParcelable("data");
                 // Set The Bitmap Data To ImageView
                 bm_small = Bitmap.createScaledBitmap(selectedBitmap, 100, 100, false);
-                bm = Bitmap.createScaledBitmap(selectedBitmap, 300, 300, false);
+                bm = Bitmap.createScaledBitmap(selectedBitmap, 350, 350, false);
                 final ProgressDialog pd = new ProgressDialog(this);
                 pd.setTitle("Загрузка картинки");
                 pd.setMessage("Пожалуйста подождите");
@@ -255,8 +255,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             cropIntent.putExtra("aspectX", 1);
             cropIntent.putExtra("aspectY", 1);
             // indicate output X and Y
-            cropIntent.putExtra("outputX", 280);
-            cropIntent.putExtra("outputY", 280);
+//            cropIntent.putExtra("outputX", 350);
+//            cropIntent.putExtra("outputY", 350);
 
             // retrieve data on return
             cropIntent.putExtra("return-data", true);
