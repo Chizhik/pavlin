@@ -26,6 +26,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
@@ -64,9 +66,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             mainAdapter = new OpinionParseAdapter(ProfileActivity.this, hostUser);
                             listView.setAdapter(mainAdapter);
                             listView.setOnItemClickListener(ProfileActivity.this);
-                            Log.d("ParseUser", "user: " + user.getObjectId());
-                            Log.d("ParseUser", "hostUser: " + hostUser.getObjectId());
-                            Log.d("ParseUser", "currentUser: " + currentUser.getObjectId());
                         } else {
                             finish();
                             Log.d("ParseUser", "Couldn't find ParseUser");
@@ -91,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         first = (EditText) v.findViewById(R.id.firstEditText);
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
-        if (hostUser.getParseFile("avatar") != null) {
+        if (hostUser != null && hostUser.getParseFile("avatar") != null) {
             ParseFile avatar = (ParseFile) hostUser.get("avatar");
             avatar.getDataInBackground(new GetDataCallback() {
                 @Override
@@ -123,7 +122,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     Toast.makeText(this, "Заполните все три поля", Toast.LENGTH_SHORT).show();
                 } else {
                     ParseObject op = new ParseObject("Opinion");
-                    op.put("sender", currentUser);
+                    if (currentUser == null)  {
+                        op.put("sender", JSONObject.NULL);
+                    } else {
+                        op.put("sender", currentUser);
+                    }
                     op.put("receiver", hostUser);
                     op.put("firstWord", f);
                     op.put("secondWord", s);

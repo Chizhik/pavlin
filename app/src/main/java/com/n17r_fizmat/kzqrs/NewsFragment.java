@@ -28,6 +28,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.Date;
 
@@ -103,38 +105,61 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
 
             try {
-                senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
+                Object temp = object.fetchIfNeeded().get("sender");
+                if (temp == JSONObject.NULL) {
+                    senderUser = null;
+                } else {
+                    senderUser = (ParseUser) temp;
+                }
                 receiverUser = (ParseUser) object.fetchIfNeeded().get("receiver");
-                ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
                 final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar");
                 final NewsHolder finalHolder = holder;
-                avatarSender.getDataInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(final byte[] dataSender, ParseException e) {
-                        if (e == null) {
-                            avatarReceiver.getDataInBackground(new GetDataCallback() {
-                                @Override
-                                public void done(byte[] dataReceiver, ParseException e) {
-                                    if (e == null) {
-                                        Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
-                                        Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
-                                        finalHolder.profileSender.setImageBitmap(bmSender);
-                                        finalHolder.profileReceiver.setImageBitmap(bmReceiver);
-                                    } else {
-                                        Log.d("ParseException", e.toString());
-                                        Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                String nameSender;
+                if (senderUser != null) {
+                    final ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
+                    avatarSender.getDataInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(final byte[] dataSender, ParseException e) {
+                            if (e == null) {
+                                avatarReceiver.getDataInBackground(new GetDataCallback() {
+                                    @Override
+                                    public void done(byte[] dataReceiver, ParseException e) {
+                                        if (e == null) {
+                                            Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
+                                            Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
+                                            finalHolder.profileSender.setImageBitmap(bmSender);
+                                            finalHolder.profileReceiver.setImageBitmap(bmReceiver);
+                                        } else {
+                                            Log.d("ParseException", e.toString());
+                                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
-                        } else {
-                            Log.d("ParseException", e.toString());
-                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                Log.d("ParseException", e.toString());
+                                Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                    nameSender = senderUser.fetchIfNeeded().getUsername();
+                } else {
+                    avatarReceiver.getDataInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] dataReceiver, ParseException e) {
+                            if (e == null) {
+                                Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
+                                finalHolder.profileReceiver.setImageBitmap(bmReceiver);
+                            } else {
+                                Log.d("ParseException", e.toString());
+                                Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    nameSender = "Аноним";
+                }
+
                 Date time_s = object.fetchIfNeeded().getCreatedAt();
-                Object nameSender = senderUser.fetchIfNeeded().getUsername();
-                Object nameReceiver = receiverUser.fetchIfNeeded().getUsername();
+                String nameReceiver = receiverUser.fetchIfNeeded().getUsername();
                 Object f = object.fetchIfNeeded().get("firstWord");
                 Object s = object.fetchIfNeeded().get("secondWord");
                 Object t = object.fetchIfNeeded().get("thirdWord");

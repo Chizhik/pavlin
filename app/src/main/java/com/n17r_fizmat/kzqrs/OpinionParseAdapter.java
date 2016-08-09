@@ -20,6 +20,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import org.json.JSONObject;
+
 import java.util.Date;
 
 /**
@@ -54,27 +56,33 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
         TextView thirdWord = (TextView) v.findViewById(R.id.rowThirdWord);
 
         try {
-            senderUser = (ParseUser) object.fetchIfNeeded().get("sender");
+            Object temp = object.fetchIfNeeded().get("sender");
+            if (temp == JSONObject.NULL) {
+                senderUser = null;
+            } else {
+                senderUser = (ParseUser) temp;
+            }
 //            imageFile = senderUser.fetchIfNeeded().getParseFile("avatar");
-            ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
-            avatar.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    if (e == null) {
-                        Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
-                        profileImage.setImageBitmap(bm);
-                    } else {
-                        Log.d("ParseException", e.toString());
-                        Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+            String name;
+            if (senderUser != null) {
+                ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
+                avatar.getDataInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        if (e == null) {
+                            Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
+                            profileImage.setImageBitmap(bm);
+                        } else {
+                            Log.d("ParseException", e.toString());
+                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
-//            if (imageFile != null) {
-//                profilePic.setParseFile(imageFile);
-//                profilePic.loadInBackground();
-//            }
-            Date time_s = object.fetchIfNeeded().getCreatedAt();
-            Object name = senderUser.fetchIfNeeded().getUsername();
+                });
+                name = senderUser.fetchIfNeeded().getUsername();
+            } else {
+                name = "Аноним";
+            }
+            Date time_s = object.fetchIfNeeded().getCreatedAt();;
             Object f = object.fetchIfNeeded().get("firstWord");
             Object s = object.fetchIfNeeded().get("secondWord");
             Object t = object.fetchIfNeeded().get("thirdWord");

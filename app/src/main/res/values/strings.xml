@@ -26,7 +26,7 @@
     <string name="saveButton">Сохранить</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_suggestion">Войдите для того чтобы люди могли оставлять мнения о вас</string>
     <string name="choose_opinion">Выберите мнение, которым хотите поделиться</string>
     <string name="share_on_instagram">Поделиться</string>
     <string name="anonymous">анонимно</string>
