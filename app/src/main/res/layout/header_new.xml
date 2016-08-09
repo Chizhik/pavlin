@@ -41,7 +41,7 @@
                 android:id="@+id/share_button"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="40dp"
-                android:visibility="visible"
+                android:visibility="invisible"
                 android:src="@drawable/instagram2"
                 android:gravity="center"
                 android:contentDescription="@string/share_on_instagram" />
@@ -70,7 +70,7 @@
                 android:layout_marginBottom="40dp"
                 android:src="@drawable/settings4"
                 android:id="@+id/settings_button"
-                android:visibility="visible"
+                android:visibility="invisible"
                 android:contentDescription="@string/settingsButton" />
 
         </LinearLayout>

@@ -232,8 +232,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             cropIntent.putExtra("aspectX", 1);
             cropIntent.putExtra("aspectY", 1);
             // indicate output X and Y
-            cropIntent.putExtra("outputX", 280);
-            cropIntent.putExtra("outputY", 280);
+            cropIntent.putExtra("outputX", 350);
+            cropIntent.putExtra("outputY", 350);
 
             // retrieve data on return
             cropIntent.putExtra("return-data", true);
