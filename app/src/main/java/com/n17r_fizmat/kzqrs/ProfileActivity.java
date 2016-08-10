@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -91,19 +92,24 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
         if (hostUser != null && hostUser.getParseFile("avatar") != null) {
-            ParseFile avatar = (ParseFile) hostUser.get("avatar");
-            avatar.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    if (e == null) {
-                        bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        profilePic.setImageBitmap(bm);
-                    } else {
-                        Log.d("ParseException", e.toString());
-                        Toast.makeText(ProfileActivity.this, "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            String avatarURL = ((ParseFile) hostUser.get("avatar")).getUrl();
+            Glide
+                    .with(this)
+                    .load(avatarURL)
+                    .into(profilePic);
+//            ParseFile avatar = (ParseFile) hostUser.get("avatar");
+//            avatar.getDataInBackground(new GetDataCallback() {
+//                @Override
+//                public void done(byte[] data, ParseException e) {
+//                    if (e == null) {
+//                        bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                        profilePic.setImageBitmap(bm);
+//                    } else {
+//                        Log.d("ParseException", e.toString());
+//                        Toast.makeText(ProfileActivity.this, "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
             username.setText(hostUser.getUsername());
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);

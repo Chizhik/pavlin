@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -42,6 +43,7 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
 
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
+        Context c = getContext();
         if (v == null) {
             v = View.inflate(getContext(), R.layout.row_opinion, null);
         }
@@ -65,19 +67,24 @@ public class OpinionParseAdapter extends ParseQueryAdapter {
 //            imageFile = senderUser.fetchIfNeeded().getParseFile("avatar");
             String name;
             if (senderUser != null) {
-                ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
-                avatar.getDataInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(byte[] data, ParseException e) {
-                        if (e == null) {
-                            Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
-                            profileImage.setImageBitmap(bm);
-                        } else {
-                            Log.d("ParseException", e.toString());
-                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                String avatarURL = ((ParseFile)senderUser.fetchIfNeeded().get("avatar_small")).getUrl();
+                Glide
+                        .with(c)
+                        .load(avatarURL)
+                        .into(profileImage);
+//                ParseFile avatar = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
+//                avatar.getDataInBackground(new GetDataCallback() {
+//                    @Override
+//                    public void done(byte[] data, ParseException e) {
+//                        if (e == null) {
+//                            Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
+//                            profileImage.setImageBitmap(bm);
+//                        } else {
+//                            Log.d("ParseException", e.toString());
+//                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
                 name = senderUser.fetchIfNeeded().getUsername();
             } else {
                 name = "Аноним";

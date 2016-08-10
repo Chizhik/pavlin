@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -84,6 +85,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         public View getItemView(ParseObject object, View v, ViewGroup parent) {
             NewsHolder holder = null;
+            Context c = getContext();
 
             if (v == null) {
                 v = View.inflate(getContext(), R.layout.row_news, null);
@@ -112,49 +114,59 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     senderUser = (ParseUser) temp;
                 }
                 receiverUser = (ParseUser) object.fetchIfNeeded().get("receiver");
-                final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar");
-                final NewsHolder finalHolder = holder;
+//                final ParseFile avatarReceiver = (ParseFile) receiverUser.fetchIfNeeded().get("avatar");
+//                final NewsHolder finalHolder = holder;
                 String nameSender;
+                String receiverURL = ((ParseFile)receiverUser.fetchIfNeeded().get("avatar")).getUrl();
+                Glide
+                        .with(c)
+                        .load(receiverURL)
+                        .into(holder.profileReceiver);
                 if (senderUser != null) {
-                    final ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
-                    avatarSender.getDataInBackground(new GetDataCallback() {
-                        @Override
-                        public void done(final byte[] dataSender, ParseException e) {
-                            if (e == null) {
-                                avatarReceiver.getDataInBackground(new GetDataCallback() {
-                                    @Override
-                                    public void done(byte[] dataReceiver, ParseException e) {
-                                        if (e == null) {
-                                            Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
-                                            Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
-                                            finalHolder.profileSender.setImageBitmap(bmSender);
-                                            finalHolder.profileReceiver.setImageBitmap(bmReceiver);
-                                        } else {
-                                            Log.d("ParseException", e.toString());
-                                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            } else {
-                                Log.d("ParseException", e.toString());
-                                Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    String senderURL = ((ParseFile)senderUser.fetchIfNeeded().get("avatar_small")).getUrl();
+                    Glide
+                            .with(c)
+                            .load(senderURL)
+                            .into(holder.profileSender);
+//                    final ParseFile avatarSender = (ParseFile) senderUser.fetchIfNeeded().get("avatar_small");
+//                    avatarSender.getDataInBackground(new GetDataCallback() {
+//                        @Override
+//                        public void done(final byte[] dataSender, ParseException e) {
+//                            if (e == null) {
+//                                avatarReceiver.getDataInBackground(new GetDataCallback() {
+//                                    @Override
+//                                    public void done(byte[] dataReceiver, ParseException e) {
+//                                        if (e == null) {
+//                                            Bitmap bmSender = BitmapFactory.decodeByteArray(dataSender , 0, dataSender.length);
+//                                            Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
+//                                            finalHolder.profileSender.setImageBitmap(bmSender);
+//                                            finalHolder.profileReceiver.setImageBitmap(bmReceiver);
+//                                        } else {
+//                                            Log.d("ParseException", e.toString());
+//                                            Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }
+//                                });
+//                            } else {
+//                                Log.d("ParseException", e.toString());
+//                                Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
                     nameSender = senderUser.fetchIfNeeded().getUsername();
                 } else {
-                    avatarReceiver.getDataInBackground(new GetDataCallback() {
-                        @Override
-                        public void done(byte[] dataReceiver, ParseException e) {
-                            if (e == null) {
-                                Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
-                                finalHolder.profileReceiver.setImageBitmap(bmReceiver);
-                            } else {
-                                Log.d("ParseException", e.toString());
-                                Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+//                    avatarReceiver.getDataInBackground(new GetDataCallback() {
+//                        @Override
+//                        public void done(byte[] dataReceiver, ParseException e) {
+//                            if (e == null) {
+//                                Bitmap bmReceiver = BitmapFactory.decodeByteArray(dataReceiver , 0, dataReceiver.length);
+//                                finalHolder.profileReceiver.setImageBitmap(bmReceiver);
+//                            } else {
+//                                Log.d("ParseException", e.toString());
+//                                Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
                     nameSender = "Аноним";
                 }
 
@@ -168,11 +180,11 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     holder.time.setText(str);
                 }
                 if (nameSender != null) {
-                    holder.usernameSender.setText(nameSender.toString());
+                    holder.usernameSender.setText(nameSender);
                 }
                 if (nameReceiver != null) {
 
-                    holder.usernameReceiver.setText(nameReceiver.toString());
+                    holder.usernameReceiver.setText(nameReceiver);
                 }
                 if (f != null) {
                     holder.firstWord.setText(f.toString());

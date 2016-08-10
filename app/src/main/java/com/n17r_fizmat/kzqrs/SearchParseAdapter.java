@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -41,6 +42,7 @@ public class SearchParseAdapter extends ParseQueryAdapter {
 
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
+        Context c = getContext();
         if (v == null) {
             v = View.inflate(getContext(), R.layout.row_search_result, null);
         }
@@ -50,19 +52,24 @@ public class SearchParseAdapter extends ParseQueryAdapter {
         TextView username = (TextView) v.findViewById(R.id.resultText);
         try {
             user = (ParseUser) object;
-            ParseFile avatar = (ParseFile) user.fetchIfNeeded().get("avatar_small");
-            avatar.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    if (e == null) {
-                        Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
-                        profileImage.setImageBitmap(bm);
-                    } else {
-                        Log.d("ParseException", e.toString());
-                        Toast.makeText(getContext(), "Something went wrong while downloading avatar", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            String avatarURL = ((ParseFile) user.fetchIfNeeded().get("avatar_small")).getUrl();
+            Glide
+                    .with(c)
+                    .load(avatarURL)
+                    .into(profileImage);
+//            ParseFile avatar = (ParseFile) user.fetchIfNeeded().get("avatar_small");
+//            avatar.getDataInBackground(new GetDataCallback() {
+//                @Override
+//                public void done(byte[] data, ParseException e) {
+//                    if (e == null) {
+//                        Bitmap bm = BitmapFactory.decodeByteArray(data , 0, data .length);
+//                        profileImage.setImageBitmap(bm);
+//                    } else {
+//                        Log.d("ParseException", e.toString());
+//                        Toast.makeText(getContext(), "Something went wrong while downloading avatar", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
             Object name = user.fetchIfNeeded().getUsername();
             if (name != null) {
                 username.setText(name.toString());

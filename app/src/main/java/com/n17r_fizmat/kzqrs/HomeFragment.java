@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -94,19 +96,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         second = (EditText) v.findViewById(R.id.secondEditText);
         third = (EditText) v.findViewById(R.id.thirdEditText);
         if (currentUser.getParseFile("avatar") != null) {
-            ParseFile avatar = (ParseFile) currentUser.get("avatar");
-            avatar.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    if (e == null) {
-                        bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        profilePic.setImageBitmap(bm);
-                    } else {
-                        Log.d("ParseException", e.toString());
-                        Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            String avatarURL = ((ParseFile)currentUser.get("avatar")).getUrl();
+            Glide
+                    .with(this)
+                    .load(avatarURL)
+                    .into(profilePic);
+//            ParseFile avatar = (ParseFile) currentUser.get("avatar");
+//            avatar.getDataInBackground(new GetDataCallback() {
+//                @Override
+//                public void done(byte[] data, ParseException e) {
+//                    if (e == null) {
+//                        bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                        profilePic.setImageBitmap(bm);
+//                    } else {
+//                        Log.d("ParseException", e.toString());
+//                        Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
             username.setText(currentUser.getUsername());
             saveButton.setOnClickListener(this);
             shareButton.setOnClickListener(this);
