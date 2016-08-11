@@ -10,7 +10,8 @@
         card_view:cardElevation="2dp"
         android:id="@+id/resultCard"
         card_view:cardCornerRadius="2dp"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardUseCompatPadding="true"
+        card_view:cardBackgroundColor="@color/colorCard">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +28,7 @@
                 app:riv_border_width="1dp"
                 android:layout_height="50dp"
                 android:layout_width="50dp"
-                app:riv_border_color="#363147"
+                app:riv_border_color="@color/colorBackground"
                 app:riv_mutate_background="true"
                 app:riv_tile_mode="repeat"
                 app:riv_oval="true"
