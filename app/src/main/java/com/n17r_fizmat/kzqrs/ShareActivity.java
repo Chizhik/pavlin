@@ -3,6 +3,7 @@ package com.n17r_fizmat.kzqrs;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,9 +12,9 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,11 +31,10 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class ShareActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final int PERMISSION_REQUEST_CODE = 0;
     private LinearLayout lin_share;
     private Button share_button;
     private ImageView profile;
@@ -83,8 +83,6 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
             startActivity(intent);
             finish();
         }
-
-
     }
 
     @Override
@@ -92,32 +90,38 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         int id = view.getId();
         switch (id) {
             case R.id.share_insta:
-                final ProgressDialog pd = new ProgressDialog(this);
-                pd.setTitle("Загрузка");
-                pd.setMessage("Пожалуйста подождите");
-                pd.show();
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        File file = saveBitMap(ShareActivity.this, lin_share);
-                        if (file != null) {
-                            Log.i("TAG", "Drawing saved to the gallery!");
-                            ShareActivity.this.runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Toast.makeText(ShareActivity.this, "Изображение сохранено", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            String type = "image/*";
-                            String mediaPath = file.getAbsolutePath();
-                            createInstagramIntent(type, mediaPath);
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    final ProgressDialog pd = new ProgressDialog(this);
+                    pd.setTitle("Загрузка");
+                    pd.setMessage("Пожалуйста подождите");
+                    pd.show();
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            File file = saveBitMap(ShareActivity.this, lin_share);
+                            if (file != null) {
+                                Log.i("TAG", "Drawing saved to the gallery!");
+                                ShareActivity.this.runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(ShareActivity.this, "Изображение сохранено", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                String type = "image/*";
+                                String mediaPath = file.getAbsolutePath();
+                                createInstagramIntent(type, mediaPath);
 
-                        } else {
-                            Log.i("TAG", "Oops! Image could not be saved.");
+                            } else {
+                                Log.i("TAG", "Oops! Image could not be saved.");
+                            }
+                            pd.dismiss();
                         }
-                        pd.dismiss();
-                    }
-                };
-                thread.start();
+                    };
+                    thread.start();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                }
+
 //                Intent intent = new Intent(ShareActivity.this, MainActivity.class);
 //                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //                startActivity(intent);
@@ -134,6 +138,48 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    final ProgressDialog pd = new ProgressDialog(this);
+                    pd.setTitle("Загрузка");
+                    pd.setMessage("Пожалуйста подождите");
+                    pd.show();
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            File file = saveBitMap(ShareActivity.this, lin_share);
+                            if (file != null) {
+                                Log.i("TAG", "Drawing saved to the gallery!");
+                                ShareActivity.this.runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(ShareActivity.this, "Изображение сохранено", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                String type = "image/*";
+                                String mediaPath = file.getAbsolutePath();
+                                createInstagramIntent(type, mediaPath);
+
+                            } else {
+                                Log.i("TAG", "Oops! Image could not be saved.");
+                            }
+                            pd.dismiss();
+                        }
+                    };
+                    thread.start();
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                }
+            }
         }
     }
 
@@ -240,4 +286,6 @@ public class ShareActivity extends AppCompatActivity implements View.OnClickList
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
+
+
 }
