@@ -48,92 +48,55 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_search, container, false);
-        new DownloadUsers().execute();
-        return v;
-    }
-
-    private class DownloadUsers extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // Create a progressdialog
-            mProgressDialog = new ProgressDialog(getContext());
-            // Set progressdialog title
-            mProgressDialog.setTitle("Поиск пользователей");
-            // Set progressdialog message
-            mProgressDialog.setMessage("Загрузка...");
-            mProgressDialog.setIndeterminate(false);
-            // Show progressdialog
-            mProgressDialog.show();
-        }
-
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            userList = new ArrayList<User>();
-            ParseQuery<ParseUser> query = ParseUser.getQuery();
-            query.findInBackground(new FindCallback<ParseUser>() {
-                @Override
-                public void done(List<ParseUser> userObjects, ParseException error) {
-                    if (userObjects != null) {
-                        for (int i = 0; i < userObjects.size(); i++) {
-                            String username = userObjects.get(i).getUsername();
-                            String id = userObjects.get(i).getObjectId();
-                            String avatar = ((ParseFile)userObjects.get(i).get("avatar_small")).getUrl();
-                            User user = new User(username, avatar, id);
-                            userList.add(user);
-                        }
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.setTitle("Поиск пользователей");
+        mProgressDialog.setMessage("Загрузка...");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.show();
+        userList = new ArrayList<User>();
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> userObjects, ParseException error) {
+                if (userObjects != null) {
+                    for (int i = 0; i < userObjects.size(); i++) {
+                        String username = userObjects.get(i).getUsername();
+                        String id = userObjects.get(i).getObjectId();
+                        String avatar = ((ParseFile)userObjects.get(i).get("avatar_small")).getUrl();
+                        User user = new User(username, avatar, id);
+                        userList.add(user);
                     }
                 }
-            });
-            return null;
-        }
+                try {
+                    View v = getView();
+                    listView = (ListView) v.findViewById(R.id.searchListView);
+                    editSearch = (EditText) v.findViewById(R.id.search_EditText);
+                    adapter = new SearchAdapter(getContext(), userList);
+                    listView.setAdapter(adapter);
+                    mProgressDialog.dismiss();
+                    editSearch.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        @Override
-        protected void onPostExecute(Void args) {
-            try {
-                View v = getView();
-                listView = (ListView) v.findViewById(R.id.searchListView);
-                editSearch = (EditText) v.findViewById(R.id.search_EditText);
-                adapter = new SearchAdapter(getContext(), userList);
-                listView.setAdapter(adapter);
-                mProgressDialog.dismiss();
-                editSearch.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
 
-                    }
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
 
-                    }
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            String text = editSearch.getText().toString().toLowerCase(Locale.getDefault());
+                            adapter.filter(text);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        String text = editSearch.getText().toString().toLowerCase(Locale.getDefault());
-                        adapter.filter(text);
-                    }
-                });;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-
-        }
+        });
+        return v;
     }
-
-
-
-//    @Override
-//    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        ParseObject object = (ParseObject) listView.getItemAtPosition(i);
-//        ParseUser user = (ParseUser) object;
-//        Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-//        Bundle b = new Bundle();
-//        String id = user.getObjectId();
-//        b.putString("ParseUserId", id);
-//        profileIntent.putExtras(b);
-//        startActivity(profileIntent);
-//    }
 }

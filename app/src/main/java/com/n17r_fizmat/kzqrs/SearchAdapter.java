@@ -43,7 +43,7 @@ public class SearchAdapter extends BaseAdapter {
         this.context = context;
         this.user_list = userList;
         this.arrayList = new ArrayList<User>();
-        this.arrayList.addAll(userList);
+        this.arrayList.addAll(user_list);
         inflater = LayoutInflater.from(context);
     }
 
@@ -147,12 +147,11 @@ public class SearchAdapter extends BaseAdapter {
         } else {
             for (User u : arrayList) {
                 if (u.getUsername().toLowerCase(Locale.getDefault()).startsWith(charText)) {
-                    Log.d("USERNAME", u.getUsername());
                     user_list.add(u);
                 }
             }
         }
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
 }

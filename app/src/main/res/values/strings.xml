@@ -17,7 +17,7 @@
     <string name="yesButton">Yes</string>
     <string name="noButton">No</string>
     <string name="homeButtonName">Home</string>
-    <string name="searchButtonName">Search</string>
+    <string name="searchButtonName">поиск</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="ThreeWords">Опиши меня в трех словах</string>
     <string name="hint1">Первое слово..</string>
