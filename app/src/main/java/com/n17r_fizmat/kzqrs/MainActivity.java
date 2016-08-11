@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.setContext(this);
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             viewPagerAdapter.addFragments(new NewsFragment(), "News");
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
+
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {

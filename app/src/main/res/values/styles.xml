@@ -7,7 +7,15 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">#363147</item>
         <item name="colorPrimaryDark">#363147</item>
-        <item name="colorAccent">#FF5722</item>
+        <item name="colorAccent">#5AB5CE</item>
+    </style>
+
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
     </style>
 
 
