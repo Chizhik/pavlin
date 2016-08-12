@@ -44,6 +44,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+    private final static int LIMIT = 10;
     private OpinionAdapter mainAdapter;
     private Context context;
     private List<Opinion> opList;
@@ -80,7 +81,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.whereEqualTo("receiver", currentUser);
         query.orderByDescending("createdAt");
-        query.setLimit(10);
+        query.setLimit(LIMIT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -95,9 +96,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     listView = (ListView) v.findViewById(R.id.lvMain);
                     header = createHeader(savedInstanceState);
                     listView.addHeaderView(header);
-                    btnLoadMore = new Button(context);
-                    btnLoadMore.setText("Загрузить еще");
-                    listView.addFooterView(btnLoadMore);
+                    if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
+                        btnLoadMore = new Button(context);
+                        btnLoadMore.setText("Загрузить еще");
+                        listView.addFooterView(btnLoadMore);
+                    }
                     mainAdapter = new OpinionAdapter(getContext(), opList);
                     listView.setAdapter(mainAdapter);
                     listView.setOnItemClickListener(HomeFragment.this);
@@ -125,12 +128,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         mProgressDialog.show();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(10);
+        query.setLimit(LIMIT);
         query.whereLessThan("createdAt", lastDate);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
+                    if (objects.isEmpty() || objects.size() < LIMIT) {
+                        listView.removeFooterView(btnLoadMore);
+                    }
                     for (int i = 0; i < objects.size(); i++) {
                         ParseObject object = objects.get(i);
                         opList.add(opinionFromParseObject(object));
@@ -219,11 +225,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         opList.clear();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(10);
+        query.setLimit(LIMIT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
+                    if (objects.isEmpty() || objects.size() < LIMIT) {
+                        listView.removeFooterView(btnLoadMore);
+                    }
                     for (int i = 0; i < objects.size(); i++) {
                         ParseObject object = objects.get(i);
                         opList.add(opinionFromParseObject(object));

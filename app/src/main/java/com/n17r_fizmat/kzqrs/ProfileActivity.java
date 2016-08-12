@@ -1,5 +1,6 @@
 package com.n17r_fizmat.kzqrs;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,10 +31,17 @@ import com.parse.ParseUser;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
-    private OpinionParseAdapter mainAdapter;
+    private OpinionAdapter mainAdapter;
+    private final static int LIMIT = 10;
+    private Date lastDate;
+    private Button btnLoadMore;
+    private List<Opinion> opList;
+    private ProgressDialog mProgressDialog;
     private ListView listView;
     private ImageView profilePic;
     private TextView username;
@@ -55,6 +64,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             // TODO change hostUser
             String q = b.getString("ParseUserId");
             if (q != null && !q.matches("")) {
+                mProgressDialog = new ProgressDialog(ProfileActivity.this);
+                mProgressDialog.setTitle("Загрузка");
+                mProgressDialog.setMessage("Пожалуйста подождите");
+                mProgressDialog.setIndeterminate(false);
+                mProgressDialog.show();
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
                 query.whereEqualTo("objectId", q);
                 query.getInBackground(q, new GetCallback<ParseUser>() {
@@ -62,22 +76,58 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         if (e == null) {
                             listView = (ListView) findViewById(R.id.lvMain_profile);
                             hostUser = user;
-                            header = createHeader();
-                            listView.addHeaderView(header);
-                            mainAdapter = new OpinionParseAdapter(ProfileActivity.this, hostUser);
-                            listView.setAdapter(mainAdapter);
-                            listView.setOnItemClickListener(ProfileActivity.this);
+                            opList = new ArrayList<Opinion>();
+                            ParseQuery<ParseObject> opQuery = new ParseQuery<ParseObject>("Opinion");
+                            opQuery.whereEqualTo("receiver", currentUser);
+                            opQuery.orderByDescending("createdAt");
+                            opQuery.setLimit(LIMIT);
+                            opQuery.findInBackground(new FindCallback<ParseObject>() {
+                                @Override
+                                public void done(List<ParseObject> objects, ParseException e) {
+                                    if (objects != null) {
+                                        if (objects.isEmpty() || objects.size() < LIMIT) {
+                                            listView.removeFooterView(btnLoadMore);
+                                        }
+                                        for (int i = 0; i < objects.size(); i++) {
+                                            ParseObject object = objects.get(i);
+                                            opList.add(opinionFromParseObject(object));
+                                        }
+                                    }
+                                    try {
+                                        header = createHeader();
+                                        listView.addHeaderView(header);
+                                        if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
+                                            btnLoadMore = new Button(ProfileActivity.this);
+                                            btnLoadMore.setText("Загрузить еще");
+                                            listView.addFooterView(btnLoadMore);
+                                        }
+                                        mainAdapter = new OpinionAdapter(ProfileActivity.this, opList);
+                                        listView.setAdapter(mainAdapter);
+                                        listView.setOnItemClickListener(ProfileActivity.this);
+                                        btnLoadMore.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                loadMoreListView();
+                                            }
+                                        });
+                                    } catch (Exception exc) {
+                                        exc.printStackTrace();
+                                    }
+                                    mProgressDialog.dismiss();
+                                }
+                            });
+
                         } else {
                             finish();
                             Log.d("ParseUser", "Couldn't find ParseUser");
                         }
                     }
                 });
-            }
-        }
 
+            }
+
+        }
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_profile);
-//        header = createHeader();
         swipeRefreshLayout.setOnRefreshListener(this);
 
     }
@@ -97,19 +147,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .with(this)
                     .load(avatarURL)
                     .into(profilePic);
-//            ParseFile avatar = (ParseFile) hostUser.get("avatar");
-//            avatar.getDataInBackground(new GetDataCallback() {
-//                @Override
-//                public void done(byte[] data, ParseException e) {
-//                    if (e == null) {
-//                        bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-//                        profilePic.setImageBitmap(bm);
-//                    } else {
-//                        Log.d("ParseException", e.toString());
-//                        Toast.makeText(ProfileActivity.this, "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
             username.setText(hostUser.getUsername());
             profilePic.setOnClickListener(this);
             saveButton.setOnClickListener(this);
@@ -144,8 +181,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     second.clearFocus();
                     third.setText("");
                     third.clearFocus();
-                    mainAdapter = new OpinionParseAdapter(this, hostUser);
-                    listView.setAdapter(mainAdapter);
                     Toast.makeText(this, "Сохранено!", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -154,29 +189,98 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onRefresh() {
-        mainAdapter = new OpinionParseAdapter(this, hostUser);
-        listView.setAdapter(mainAdapter);
-        swipeRefreshLayout.setRefreshing(false);
+        opList.clear();
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.orderByDescending("createdAt");
+        query.setLimit(LIMIT);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (objects != null) {
+                    if (objects.isEmpty() || objects.size() < LIMIT) {
+                        listView.removeFooterView(btnLoadMore);
+                    }
+                    for (int i = 0; i < objects.size(); i++) {
+                        ParseObject object = objects.get(i);
+                        opList.add(opinionFromParseObject(object));
+                    }
+                    listView.removeHeaderView(header);
+                    header = createHeader();
+                    listView.addHeaderView(header);
+                    mainAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ParseObject object = (ParseObject) listView.getItemAtPosition(i);
-        try {
-            Object temp = object.fetchIfNeeded().get("sender");
-            if (temp != JSONObject.NULL) {
-                ParseUser senderUser = (ParseUser) temp;
-                Intent profileIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
-                Bundle b = new Bundle();
-                String id = senderUser.getObjectId();
-                Log.d("ParseUser", "senderUser: " + id);
-                b.putString("ParseUserId", id);
-                profileIntent.putExtras(b);
-                ProfileActivity.this.startActivity(profileIntent);
-            }
-        } catch (ParseException e) {
-            Log.v("Parse", e.toString());
-            e.printStackTrace();
+        Opinion opn = (Opinion) listView.getItemAtPosition(i);
+        User temp = opn.getSender();
+        if (temp != null) {
+            Intent profileIntent = new Intent(this, ProfileActivity.class);
+            Bundle b = new Bundle();
+            String id = temp.getUserId();
+            Log.d("ParseUser", "senderUser: " + id);
+            b.putString("ParseUserId", id);
+            profileIntent.putExtras(b);
+            startActivity(profileIntent);
         }
+    }
+    private Opinion opinionFromParseObject(ParseObject object) {
+        ParseUser sender;
+        User userSender;
+        Object temp = object.get("sender");
+        if (temp == JSONObject.NULL) {
+            userSender = null;
+        } else {
+            sender = (ParseUser) temp;
+            try {
+                sender.fetchIfNeeded();
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+            String senderId = sender.getObjectId();
+            String usernameSender = sender.getUsername();
+            String avatarSender = ((ParseFile)sender.get("avatar_small")).getUrl();
+            userSender = new User(usernameSender, avatarSender, senderId);
+        }
+
+        String first = object.get("firstWord").toString();
+        String second = object.get("secondWord").toString();
+        String third = object.get("thirdWord").toString();
+        Date date_s = object.getCreatedAt();
+        lastDate = date_s;
+        String date = (String) DateUtils.getRelativeDateTimeString(this, date_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
+        return new Opinion(userSender, null, first, second, third, date);
+    }
+
+    private void loadMoreListView() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle("Загрузка мнений");
+        mProgressDialog.setMessage("Пожалуйста подождите");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.show();
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.orderByDescending("createdAt");
+        query.setLimit(LIMIT);
+        query.whereLessThan("createdAt", lastDate);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (objects != null) {
+                    if (objects.isEmpty() || objects.size() < LIMIT) {
+                        listView.removeFooterView(btnLoadMore);
+                    }
+                    for (int i = 0; i < objects.size(); i++) {
+                        ParseObject object = objects.get(i);
+                        opList.add(opinionFromParseObject(object));
+                    }
+                    mainAdapter.notifyDataSetChanged();
+                }
+                mProgressDialog.dismiss();
+            }
+        });
     }
 }

@@ -37,6 +37,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private final static int LIMIT = 10;
     private ListView news_list;
     private NewsAdapter mainAdapter;
     private Context context;
@@ -64,7 +65,7 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         newsList = new ArrayList<Opinion>();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(10);
+        query.setLimit(LIMIT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -78,9 +79,11 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
                     View v = getView();
                     mProgressDialog.dismiss();
                     news_list = (ListView) v.findViewById(R.id.news_list);
-                    btnLoadMore = new Button(context);
-                    btnLoadMore.setText("Загрузить еще");
-                    news_list.addFooterView(btnLoadMore);
+                    if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
+                        btnLoadMore = new Button(context);
+                        btnLoadMore.setText("Загрузить еще");
+                        news_list.addFooterView(btnLoadMore);
+                    }
                     mainAdapter = new NewsAdapter(context, newsList);
                     news_list.setAdapter(mainAdapter);
                     btnLoadMore.setOnClickListener(new View.OnClickListener() {
@@ -108,12 +111,15 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         mProgressDialog.show();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(10);
+        query.setLimit(LIMIT);
         query.whereLessThan("createdAt", lastDate);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
+                    if (objects.isEmpty() || objects.size() < LIMIT) {
+                        news_list.removeFooterView(btnLoadMore);
+                    }
                     for (int i = 0; i < objects.size(); i++) {
                         ParseObject object = objects.get(i);
                         newsList.add(opinionFromParseObject(object));
@@ -130,11 +136,14 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         newsList.clear();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(10);
+        query.setLimit(LIMIT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
+                    if (objects.isEmpty() || objects.size() < LIMIT) {
+                        news_list.removeFooterView(btnLoadMore);
+                    }
                     for (int i = 0; i < objects.size(); i++) {
                         ParseObject object = objects.get(i);
                         newsList.add(opinionFromParseObject(object));
