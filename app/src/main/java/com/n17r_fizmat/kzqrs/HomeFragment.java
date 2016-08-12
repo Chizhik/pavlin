@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -79,7 +80,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.whereEqualTo("receiver", currentUser);
         query.orderByDescending("createdAt");
-        query.setLimit(3);
+        query.setLimit(10);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -124,7 +125,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         mProgressDialog.show();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(3);
+        query.setLimit(10);
         query.whereLessThan("createdAt", lastDate);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -218,7 +219,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         opList.clear();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(3);
+        query.setLimit(10);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -239,23 +240,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ParseObject object = (ParseObject) listView.getItemAtPosition(i);
-        try {
-            Context c = getContext();
-            Object temp = object.fetchIfNeeded().get("sender");
-            if (temp != JSONObject.NULL) {
-                ParseUser senderUser = (ParseUser) temp;
-                Intent profileIntent = new Intent(c, ProfileActivity.class);
-                Bundle b = new Bundle();
-                String id = senderUser.getObjectId();
-                Log.d("ParseUser", "senderUser: " + id);
-                b.putString("ParseUserId", id);
-                profileIntent.putExtras(b);
-                c.startActivity(profileIntent);
-            }
-        } catch (ParseException e) {
-            Log.v("Parse", e.toString());
-            e.printStackTrace();
+        Opinion opn = (Opinion) listView.getItemAtPosition(i);
+        Context c = getContext();
+        User temp = opn.getSender();
+        if (temp != null) {
+            Intent profileIntent = new Intent(c, ProfileActivity.class);
+            Bundle b = new Bundle();
+            String id = temp.getUserId();
+            Log.d("ParseUser", "senderUser: " + id);
+            b.putString("ParseUserId", id);
+            profileIntent.putExtras(b);
+            c.startActivity(profileIntent);
         }
     }
     private Opinion opinionFromParseObject(ParseObject object) {
