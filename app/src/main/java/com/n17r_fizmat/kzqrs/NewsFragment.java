@@ -153,6 +153,10 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //                            }
 //                        }
 //                    });
+                    Glide
+                            .with(c)
+                            .load(R.drawable.profile_pic)
+                            .into(holder.profileSender);
                     nameSender = senderUser.fetchIfNeeded().getUsername();
                 } else {
 //                    avatarReceiver.getDataInBackground(new GetDataCallback() {
