@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
     private ProgressDialog mProgressDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Opinion> newsList = null;
+    private Button btnLoadMore;
+    private Date lastDate;
 
     public NewsFragmentNew() {
         // Required empty public constructor
@@ -49,12 +52,12 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         context = getContext();
         View v = inflater.inflate(R.layout.fragment_news, container, false);
         mProgressDialog = new ProgressDialog(getContext());
-        mProgressDialog.setTitle("Загрузка мнений");
+        mProgressDialog.setTitle("Загрузка");
         mProgressDialog.setMessage("Пожалуйста подождите");
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
@@ -68,48 +71,24 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
                 if (objects != null) {
                     for (int i = 0; i < objects.size(); i++) {
                         ParseObject object = objects.get(i);
-                        ParseUser sender;
-                        User userSender;
-                        Object temp = object.get("sender");
-                        if (temp == JSONObject.NULL) {
-                            userSender = null;
-                        } else {
-                            sender = (ParseUser) temp;
-                            try {
-                                sender.fetchIfNeeded();
-                            } catch (ParseException pe) {
-                                pe.printStackTrace();
-                            }
-                            String senderId = sender.getObjectId();
-                            String usernameSender = sender.getUsername();
-                            String avatarSender = ((ParseFile)sender.get("avatar_small")).getUrl();
-                            userSender = new User(usernameSender, avatarSender, senderId);
-                        }
-                        ParseUser receiver = (ParseUser)object.get("receiver");
-                        try {
-                            receiver.fetchIfNeeded();
-                        } catch (ParseException pe) {
-                            pe.printStackTrace();
-                        }
-                        String first = object.get("firstWord").toString();
-                        String second = object.get("secondWord").toString();
-                        String third = object.get("thirdWord").toString();
-                        String receiverId = receiver.getObjectId();
-                        String usernameReceiver = receiver.getUsername();
-                        String avatarReceiver = ((ParseFile)receiver.get("avatar")).getUrl();
-                        User userReceiver = new User(usernameReceiver, avatarReceiver, receiverId);
-                        Date date_s = object.getCreatedAt();
-                        String date = (String) DateUtils.getRelativeDateTimeString(getContext(), date_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
-                        Opinion opinion = new Opinion(userSender, userReceiver, first, second, third, date);
-                        newsList.add(opinion);
+                        newsList.add(opinionFromParseObject(object));
                     }
                 }
                 try {
                     View v = getView();
                     mProgressDialog.dismiss();
                     news_list = (ListView) v.findViewById(R.id.news_list);
+                    btnLoadMore = new Button(context);
+                    btnLoadMore.setText("Загрузить еще");
+                    news_list.addFooterView(btnLoadMore);
                     mainAdapter = new NewsAdapter(context, newsList);
                     news_list.setAdapter(mainAdapter);
+                    btnLoadMore.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            loadMoreListView();
+                        }
+                    });
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }
@@ -127,40 +106,17 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         mProgressDialog.setMessage("Пожалуйста подождите");
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
-        newsList = new ArrayList<Opinion>();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
-        query.setLimit(30);
+        query.setLimit(10);
+        query.whereLessThan("createdAt", lastDate);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
                     for (int i = 0; i < objects.size(); i++) {
                         ParseObject object = objects.get(i);
-                        ParseUser sender;
-                        User userSender;
-                        Object temp = object.get("sender");
-                        if (temp == JSONObject.NULL) {
-                            userSender = null;
-                        } else {
-                            sender = (ParseUser) temp;
-                            String senderId = sender.getObjectId();
-                            String usernameSender = sender.getUsername();
-                            String avatarSender = ((ParseFile)sender.get("avatar_small")).getUrl();
-                            userSender = new User(usernameSender, avatarSender, senderId);
-                        }
-                        ParseUser receiver = (ParseUser)object.get("receiver");
-                        String first = object.get("firstWord").toString();
-                        String second = object.get("secondWord").toString();
-                        String third = object.get("thirdWord").toString();
-                        String receiverId = receiver.getObjectId();
-                        String usernameReceiver = receiver.getUsername();
-                        String avatarReceiver = ((ParseFile)receiver.get("avatar")).getUrl();
-                        User userReceiver = new User(usernameReceiver, avatarReceiver, receiverId);
-                        Date date_s = object.getCreatedAt();
-                        String date = (String) DateUtils.getRelativeDateTimeString(getContext(), date_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
-                        Opinion opinion = new Opinion(userSender, userReceiver, first, second, third, date);
-                        newsList.add(opinion);
+                        newsList.add(opinionFromParseObject(object));
                     }
                     mainAdapter.notifyDataSetChanged();
                 }
@@ -171,7 +127,23 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-
+        newsList.clear();
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.orderByDescending("createdAt");
+        query.setLimit(10);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (objects != null) {
+                    for (int i = 0; i < objects.size(); i++) {
+                        ParseObject object = objects.get(i);
+                        newsList.add(opinionFromParseObject(object));
+                    }
+                    mainAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     private class NewsAdapter extends BaseAdapter {
@@ -262,7 +234,6 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
             }
         }
     };
-    //change
     private View.OnClickListener receiverClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -279,4 +250,41 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
             }
         }
     };
+
+    private Opinion opinionFromParseObject(ParseObject object) {
+        ParseUser sender;
+        User userSender;
+        Object temp = object.get("sender");
+        if (temp == JSONObject.NULL) {
+            userSender = null;
+        } else {
+            sender = (ParseUser) temp;
+            try {
+                sender.fetchIfNeeded();
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+            String senderId = sender.getObjectId();
+            String usernameSender = sender.getUsername();
+            String avatarSender = ((ParseFile)sender.get("avatar_small")).getUrl();
+            userSender = new User(usernameSender, avatarSender, senderId);
+        }
+        ParseUser receiver = (ParseUser)object.get("receiver");
+        try {
+            receiver.fetchIfNeeded();
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+        }
+        String first = object.get("firstWord").toString();
+        String second = object.get("secondWord").toString();
+        String third = object.get("thirdWord").toString();
+        String receiverId = receiver.getObjectId();
+        String usernameReceiver = receiver.getUsername();
+        String avatarReceiver = ((ParseFile)receiver.get("avatar")).getUrl();
+        User userReceiver = new User(usernameReceiver, avatarReceiver, receiverId);
+        Date date_s = object.getCreatedAt();
+        lastDate = date_s;
+        String date = (String) DateUtils.getRelativeDateTimeString(getContext(), date_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
+        return new Opinion(userSender, userReceiver, first, second, third, date);
+    }
 }
