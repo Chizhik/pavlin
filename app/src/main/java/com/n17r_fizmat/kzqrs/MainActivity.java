@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.setContext(this);
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
-            viewPagerAdapter.addFragments(new NewsFragment(), "News");
+            viewPagerAdapter.addFragments(new NewsFragmentNew(), "News");
             viewPagerAdapter.addFragments(new HomeFragment(), "Profile");
             viewPagerAdapter.addFragments(new SearchFragment(), "Search");
         } else {
-            viewPagerAdapter.addFragments(new NewsFragment(), "News");
+            viewPagerAdapter.addFragments(new NewsFragmentNew(), "News");
             viewPagerAdapter.addFragments(new HomeGuestFragment(), "Profile");
             viewPagerAdapter.addFragments(new SearchFragment(), "Search");
         }

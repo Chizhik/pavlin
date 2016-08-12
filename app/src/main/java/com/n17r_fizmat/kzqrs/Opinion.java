@@ -13,34 +13,18 @@ import java.util.ArrayList;
  */
 
 public class Opinion {
-    private String username;
-    private Bitmap profilePic;
-    private String firstWord, secondWord, thirdWord;
-    private ParseUser sender, receiver;
+    private String firstWord, secondWord, thirdWord, date;
+    private User sender, receiver;
 
-    public Opinion(String username, Bitmap bm, String f, String s, String t) {
-        this.username = username;
-        this.profilePic = bm;
+    public Opinion(User sender, User receiver, String f, String s, String t, String d) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.firstWord = f;
         this.secondWord = s;
         this.thirdWord = t;
+        this.date = d;
     }
 
-    public void setUsername(String um) {
-        this.username = um;
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setProfilePic(Bitmap bm) {
-        this.profilePic = bm;
-    }
-
-    public Bitmap getProfilePic() {
-        return this.profilePic;
-    }
 
     public void setFirstWord(String s) {
         this.firstWord = s;
@@ -64,5 +48,29 @@ public class Opinion {
 
     public String getThirdWord() {
         return this.thirdWord;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
