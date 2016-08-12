@@ -1,6 +1,7 @@
 package com.n17r_fizmat.kzqrs;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,27 +24,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
-    private OpinionParseAdapter mainAdapter;
+    private OpinionAdapter mainAdapter;
+    private Context context;
+    private List<Opinion> opList;
+    private Date lastDate;
+    private Button btnLoadMore;
     private ListView listView;
     private ImageView profilePic;
     private EditText first, second, third;
-    private ParseUser currentUser = ParseUser.getCurrentUser();
+    private ParseUser currentUser;
     private Bitmap bm;
     private View header;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressDialog mProgressDialog;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -59,17 +72,74 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        listView = (ListView) v.findViewById(R.id.lvMain);
+        context = getContext();
+        currentUser = ParseUser.getCurrentUser();
+        opList = new ArrayList<Opinion>();
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.whereEqualTo("receiver", currentUser);
+        query.orderByDescending("createdAt");
+        query.setLimit(3);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (objects != null) {
+                    for (int i = 0; i < objects.size(); i++) {
+                        ParseObject object = objects.get(i);
+                        opList.add(opinionFromParseObject(object));
+                    }
+                }
+                try {
+                    View v = getView();
+                    listView = (ListView) v.findViewById(R.id.lvMain);
+                    header = createHeader(savedInstanceState);
+                    listView.addHeaderView(header);
+                    btnLoadMore = new Button(context);
+                    btnLoadMore.setText("Загрузить еще");
+                    listView.addFooterView(btnLoadMore);
+                    mainAdapter = new OpinionAdapter(getContext(), opList);
+                    listView.setAdapter(mainAdapter);
+                    listView.setOnItemClickListener(HomeFragment.this);
+                    btnLoadMore.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            loadMoreListView();
+                        }
+                    });
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            }
+        });
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_layout);
-        header = createHeader(savedInstanceState);
-        listView.addHeaderView(header);
-        mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
-        listView.setAdapter(mainAdapter);
-        listView.setOnItemClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         return v;
+    }
+
+    private void loadMoreListView() {
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.setTitle("Загрузка мнений");
+        mProgressDialog.setMessage("Пожалуйста подождите");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.show();
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.orderByDescending("createdAt");
+        query.setLimit(3);
+        query.whereLessThan("createdAt", lastDate);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (objects != null) {
+                    for (int i = 0; i < objects.size(); i++) {
+                        ParseObject object = objects.get(i);
+                        opList.add(opinionFromParseObject(object));
+                    }
+                    mainAdapter.notifyDataSetChanged();
+                }
+                mProgressDialog.dismiss();
+            }
+        });
     }
 
 
@@ -132,8 +202,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     second.clearFocus();
                     third.setText("");
                     third.clearFocus();
-                    mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
-                    listView.setAdapter(mainAdapter);
                     Toast.makeText(getContext(), "Сохранено!", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -147,12 +215,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     @Override
     public void onRefresh() {
         // TODO Improve!
-        listView.removeHeaderView(header);
-        header = createHeader(null);
-        listView.addHeaderView(header);
-        mainAdapter = new OpinionParseAdapter(getContext(), currentUser);
-        listView.setAdapter(mainAdapter);
-        swipeRefreshLayout.setRefreshing(false);
+
+        opList.clear();
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.orderByDescending("createdAt");
+        query.setLimit(3);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (objects != null) {
+                    for (int i = 0; i < objects.size(); i++) {
+                        ParseObject object = objects.get(i);
+                        opList.add(opinionFromParseObject(object));
+                    }
+                    listView.removeHeaderView(header);
+                    header = createHeader(null);
+                    listView.addHeaderView(header);
+                    mainAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     @Override
@@ -175,5 +258,32 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
             Log.v("Parse", e.toString());
             e.printStackTrace();
         }
+    }
+    private Opinion opinionFromParseObject(ParseObject object) {
+        ParseUser sender;
+        User userSender;
+        Object temp = object.get("sender");
+        if (temp == JSONObject.NULL) {
+            userSender = null;
+        } else {
+            sender = (ParseUser) temp;
+            try {
+                sender.fetchIfNeeded();
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+            String senderId = sender.getObjectId();
+            String usernameSender = sender.getUsername();
+            String avatarSender = ((ParseFile)sender.get("avatar_small")).getUrl();
+            userSender = new User(usernameSender, avatarSender, senderId);
+        }
+
+        String first = object.get("firstWord").toString();
+        String second = object.get("secondWord").toString();
+        String third = object.get("thirdWord").toString();
+        Date date_s = object.getCreatedAt();
+        lastDate = date_s;
+        String date = (String) DateUtils.getRelativeDateTimeString(getContext(), date_s.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
+        return new Opinion(userSender, null, first, second, third, date);
     }
 }
