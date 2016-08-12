@@ -149,20 +149,20 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
     private class NewsAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
-        private List<Opinion> user_list = null;
-        public NewsAdapter(Context context, List<Opinion> userList) {
+        private List<Opinion> news_l = null;
+        public NewsAdapter(Context context, List<Opinion> list) {
             this.context = context;
-            this.user_list = userList;
+            this.news_l = list;
             inflater = LayoutInflater.from(context);
         }
         @Override
         public int getCount() {
-            return newsList.size();
+            return news_l.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return newsList.get(i);
+            return news_l.get(i);
         }
 
         @Override
@@ -173,7 +173,7 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             NewsHolder holder;
-            Opinion op = newsList.get(i);
+            Opinion op = news_l.get(i);
             if (view == null) {
                 holder = new NewsHolder();
                 view = inflater.inflate(R.layout.row_news, null);

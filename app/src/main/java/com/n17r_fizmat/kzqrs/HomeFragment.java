@@ -69,16 +69,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         listView.setAdapter(mainAdapter);
         listView.setOnItemClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
-//        swipeRefreshLayout.post(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        swipeRefreshLayout.setRefreshing(true);
-//
-//                                        onPause();
-//                                        onResume();
-//                                    }
-//                                }
-//        );
         return v;
     }
 
@@ -101,19 +91,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     .with(this)
                     .load(avatarURL)
                     .into(profilePic);
-//            ParseFile avatar = (ParseFile) currentUser.get("avatar");
-//            avatar.getDataInBackground(new GetDataCallback() {
-//                @Override
-//                public void done(byte[] data, ParseException e) {
-//                    if (e == null) {
-//                        bm = BitmapFactory.decodeByteArray(data, 0, data.length);
-//                        profilePic.setImageBitmap(bm);
-//                    } else {
-//                        Log.d("ParseException", e.toString());
-//                        Toast.makeText(getContext(), "Ошибка при загрузке аватара", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
             username.setText(currentUser.getUsername());
             saveButton.setOnClickListener(this);
             shareButton.setOnClickListener(this);
@@ -127,7 +104,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         return v;
     }
 
-//         Inflate the layout for this fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.settings_button:
