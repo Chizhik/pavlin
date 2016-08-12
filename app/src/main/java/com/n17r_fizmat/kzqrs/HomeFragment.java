@@ -52,7 +52,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     private ImageView profilePic;
     private EditText first, second, third;
     private ParseUser currentUser;
-    private Bitmap bm;
     private View header;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressDialog mProgressDialog;
