@@ -4,12 +4,11 @@ package com.n17r_fizmat.kzqrs;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Path;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
     private List<Opinion> newsList = null;
     private Button btnLoadMore;
     private Date lastDate;
+    private Date firstDate;
 
     public NewsFragmentNew() {
         // Required empty public constructor
@@ -69,33 +69,7 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (objects != null) {
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        newsList.add(opinionFromParseObject(object));
-                    }
-                }
-                try {
-                    View v = getView();
-                    mProgressDialog.dismiss();
-                    news_list = (ListView) v.findViewById(R.id.news_list);
-                    if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
-                        btnLoadMore = new Button(context);
-                        btnLoadMore.setText("Загрузить еще");
-                        news_list.addFooterView(btnLoadMore);
-                    }
-                    mainAdapter = new NewsAdapter(context, newsList);
-                    news_list.setAdapter(mainAdapter);
-                    btnLoadMore.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            loadMoreListView();
-                        }
-                    });
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-
+                new Work(objects).execute();
             }
         });
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.news_swipe_refresh_layout);
@@ -103,8 +77,49 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         return v;
     }
 
+    private class Work extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public Work(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (objects != null) {
+                for (int i = 0; i < objects.size(); i++) {
+                    ParseObject object = objects.get(i);
+                    newsList.add(opinionFromParseObject(object));
+                }
+            }
+            mProgressDialog.dismiss();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            try {
+                View v = getView();
+                news_list = (ListView) v.findViewById(R.id.news_list);
+                if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
+                    btnLoadMore = new Button(context);
+                    btnLoadMore.setText("Загрузить еще");
+                    news_list.addFooterView(btnLoadMore);
+                }
+                mainAdapter = new NewsAdapter(context, newsList);
+                news_list.setAdapter(mainAdapter);
+                btnLoadMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        loadMoreListView();
+                    }
+                });
+            } catch (Exception exc) {
+                exc.printStackTrace();
+            }
+        }
+    }
+
     private void loadMoreListView() {
-        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setTitle("Загрузка мнений");
         mProgressDialog.setMessage("Пожалуйста подождите");
         mProgressDialog.setIndeterminate(false);
@@ -116,24 +131,38 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (objects != null) {
-                    if (objects.isEmpty() || objects.size() < LIMIT) {
-                        news_list.removeFooterView(btnLoadMore);
-                    }
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        newsList.add(opinionFromParseObject(object));
-                    }
-                    mainAdapter.notifyDataSetChanged();
-                }
-                mProgressDialog.dismiss();
+                new WorkLoadMore(objects).execute();
             }
         });
+    }
+    private class WorkLoadMore extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public WorkLoadMore(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < objects.size(); i++) {
+                ParseObject object = objects.get(i);
+                newsList.add(opinionFromParseObject(object));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            if (objects.isEmpty() || objects.size() < LIMIT) {
+                news_list.removeFooterView(btnLoadMore);
+            }
+            mainAdapter.notifyDataSetChanged();
+            mProgressDialog.dismiss();
+        }
+
     }
 
     @Override
     public void onRefresh() {
         newsList.clear();
+        mainAdapter.notifyDataSetChanged();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.orderByDescending("createdAt");
         query.setLimit(LIMIT);
@@ -141,18 +170,33 @@ public class NewsFragmentNew extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
-                    if (objects.isEmpty() || objects.size() < LIMIT) {
-                        news_list.removeFooterView(btnLoadMore);
-                    }
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        newsList.add(opinionFromParseObject(object));
-                    }
-                    mainAdapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
+                    new WorkRefresh(objects).execute();
                 }
             }
         });
+    }
+    private class WorkRefresh extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public WorkRefresh(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < objects.size(); i++) {
+                ParseObject object = objects.get(i);
+                newsList.add(opinionFromParseObject(object));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            if (objects.isEmpty() || objects.size() < LIMIT) {
+                news_list.removeFooterView(btnLoadMore);
+            }
+            mainAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
     }
 
     private class NewsAdapter extends BaseAdapter {

@@ -1,10 +1,9 @@
 package com.n17r_fizmat.kzqrs;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -37,7 +35,7 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
     private OpinionAdapter mainAdapter;
-    private final static int LIMIT = 10;
+    private final static int LIMIT = 2;
     private Date lastDate;
     private Button btnLoadMore;
     private List<Opinion> opList;
@@ -78,42 +76,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             hostUser = user;
                             opList = new ArrayList<Opinion>();
                             ParseQuery<ParseObject> opQuery = new ParseQuery<ParseObject>("Opinion");
-                            opQuery.whereEqualTo("receiver", currentUser);
+                            opQuery.whereEqualTo("receiver", hostUser);
                             opQuery.orderByDescending("createdAt");
                             opQuery.setLimit(LIMIT);
                             opQuery.findInBackground(new FindCallback<ParseObject>() {
                                 @Override
                                 public void done(List<ParseObject> objects, ParseException e) {
-                                    if (objects != null) {
-                                        if (objects.isEmpty() || objects.size() < LIMIT) {
-                                            listView.removeFooterView(btnLoadMore);
-                                        }
-                                        for (int i = 0; i < objects.size(); i++) {
-                                            ParseObject object = objects.get(i);
-                                            opList.add(opinionFromParseObject(object));
-                                        }
-                                    }
-                                    try {
-                                        header = createHeader();
-                                        listView.addHeaderView(header);
-                                        if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
-                                            btnLoadMore = new Button(ProfileActivity.this);
-                                            btnLoadMore.setText("Загрузить еще");
-                                            listView.addFooterView(btnLoadMore);
-                                        }
-                                        mainAdapter = new OpinionAdapter(ProfileActivity.this, opList);
-                                        listView.setAdapter(mainAdapter);
-                                        listView.setOnItemClickListener(ProfileActivity.this);
-                                        btnLoadMore.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                loadMoreListView();
-                                            }
-                                        });
-                                    } catch (Exception exc) {
-                                        exc.printStackTrace();
-                                    }
-                                    mProgressDialog.dismiss();
+                                    new Work(objects).execute();
                                 }
                             });
 
@@ -130,6 +99,51 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_profile);
         swipeRefreshLayout.setOnRefreshListener(this);
 
+    }
+
+    private class Work extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+
+        public Work(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (objects != null) {
+                for (int i = 0; i < objects.size(); i++) {
+                    ParseObject object = objects.get(i);
+                    opList.add(opinionFromParseObject(object));
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void args) {
+            try {
+                header = createHeader();
+                listView.addHeaderView(header);
+                if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
+                    btnLoadMore = new Button(ProfileActivity.this);
+                    btnLoadMore.setText("Загрузить еще");
+                    listView.addFooterView(btnLoadMore);
+                }
+                mainAdapter = new OpinionAdapter(ProfileActivity.this, opList);
+                listView.setAdapter(mainAdapter);
+                listView.setOnItemClickListener(ProfileActivity.this);
+                mProgressDialog.dismiss();
+                btnLoadMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        loadMoreListView();
+                    }
+                });
+
+            } catch (Exception exc) {
+                exc.printStackTrace();
+            }
+        }
     }
 
 
@@ -190,28 +204,40 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onRefresh() {
         opList.clear();
+        mainAdapter.notifyDataSetChanged();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.whereEqualTo("receiver", hostUser);
         query.orderByDescending("createdAt");
         query.setLimit(LIMIT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (objects != null) {
-                    if (objects.isEmpty() || objects.size() < LIMIT) {
-                        listView.removeFooterView(btnLoadMore);
-                    }
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        opList.add(opinionFromParseObject(object));
-                    }
-                    listView.removeHeaderView(header);
-                    header = createHeader();
-                    listView.addHeaderView(header);
-                    mainAdapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
+                new WorkRefresh(objects).execute();
             }
         });
+    }
+    private class WorkRefresh extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public WorkRefresh(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < objects.size(); i++) {
+                ParseObject object = objects.get(i);
+                opList.add(opinionFromParseObject(object));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            if (objects.isEmpty() || objects.size() < LIMIT) {
+                listView.removeFooterView(btnLoadMore);
+            }
+            mainAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
     }
 
     @Override
@@ -263,24 +289,38 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.whereEqualTo("receiver", hostUser);
         query.orderByDescending("createdAt");
         query.setLimit(LIMIT);
         query.whereLessThan("createdAt", lastDate);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (objects != null) {
-                    if (objects.isEmpty() || objects.size() < LIMIT) {
-                        listView.removeFooterView(btnLoadMore);
-                    }
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        opList.add(opinionFromParseObject(object));
-                    }
-                    mainAdapter.notifyDataSetChanged();
-                }
-                mProgressDialog.dismiss();
+                new WorkLoadMore(objects).execute();
             }
         });
+    }
+    private class WorkLoadMore extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public WorkLoadMore(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < objects.size(); i++) {
+                ParseObject object = objects.get(i);
+                opList.add(opinionFromParseObject(object));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            if (objects.isEmpty() || objects.size() < LIMIT) {
+                listView.removeFooterView(btnLoadMore);
+            }
+            mainAdapter.notifyDataSetChanged();
+            mProgressDialog.dismiss();
+        }
+
     }
 }

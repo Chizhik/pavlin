@@ -4,9 +4,7 @@ package com.n17r_fizmat.kzqrs;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Path;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,7 +23,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.parse.FindCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -44,7 +40,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
-    private final static int LIMIT = 10;
+    private final static int LIMIT = 2;
     private OpinionAdapter mainAdapter;
     private Context context;
     private List<Opinion> opList;
@@ -78,6 +74,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         context = getContext();
         currentUser = ParseUser.getCurrentUser();
         opList = new ArrayList<Opinion>();
+        listView = (ListView) v.findViewById(R.id.lvMain);
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
         query.whereEqualTo("receiver", currentUser);
         query.orderByDescending("createdAt");
@@ -85,39 +82,56 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (objects != null) {
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        opList.add(opinionFromParseObject(object));
-                    }
+                new Work(objects).execute();
+            }
+        });
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        return v;
+    }
+
+    private class Work extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+
+        public Work(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (objects != null) {
+                for (int i = 0; i < objects.size(); i++) {
+                    ParseObject object = objects.get(i);
+                    opList.add(opinionFromParseObject(object));
                 }
-                try {
-                    View v = getView();
-                    listView = (ListView) v.findViewById(R.id.lvMain);
-                    header = createHeader(savedInstanceState);
-                    listView.addHeaderView(header);
-                    if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
-                        btnLoadMore = new Button(context);
-                        btnLoadMore.setText("Загрузить еще");
-                        listView.addFooterView(btnLoadMore);
-                    }
-                    mainAdapter = new OpinionAdapter(getContext(), opList);
-                    listView.setAdapter(mainAdapter);
-                    listView.setOnItemClickListener(HomeFragment.this);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void args) {
+            try {
+                header = createHeader(null);
+                listView.addHeaderView(header);
+                if (objects != null && !objects.isEmpty() && objects.size() == LIMIT) {
+                    btnLoadMore = new Button(context);
+                    btnLoadMore.setText("Загрузить еще");
+                    listView.addFooterView(btnLoadMore);
                     btnLoadMore.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             loadMoreListView();
                         }
                     });
-                } catch (Exception exc) {
-                    exc.printStackTrace();
                 }
+                mainAdapter = new OpinionAdapter(context, opList);
+                listView.setAdapter(mainAdapter);
+                listView.setOnItemClickListener(HomeFragment.this);
+                mProgressDialog.dismiss();
+            } catch (Exception exc) {
+                exc.printStackTrace();
             }
-        });
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this);
-        return v;
+        }
     }
 
     private void loadMoreListView() {
@@ -127,25 +141,39 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.whereEqualTo("receiver", currentUser);
         query.orderByDescending("createdAt");
         query.setLimit(LIMIT);
         query.whereLessThan("createdAt", lastDate);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (objects != null) {
-                    if (objects.isEmpty() || objects.size() < LIMIT) {
-                        listView.removeFooterView(btnLoadMore);
-                    }
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        opList.add(opinionFromParseObject(object));
-                    }
-                    mainAdapter.notifyDataSetChanged();
-                }
-                mProgressDialog.dismiss();
+                new WorkLoadMore(objects).execute();
             }
         });
+    }
+    private class WorkLoadMore extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public WorkLoadMore(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < objects.size(); i++) {
+                ParseObject object = objects.get(i);
+                opList.add(opinionFromParseObject(object));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            if (objects.isEmpty() || objects.size() < LIMIT) {
+                listView.removeFooterView(btnLoadMore);
+            }
+            mainAdapter.notifyDataSetChanged();
+            mProgressDialog.dismiss();
+        }
+
     }
 
 
@@ -220,32 +248,45 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     @Override
     public void onRefresh() {
-        // TODO Improve!
-
         opList.clear();
+        mainAdapter.notifyDataSetChanged();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Opinion");
+        query.whereEqualTo("receiver", currentUser);
         query.orderByDescending("createdAt");
         query.setLimit(LIMIT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (objects != null) {
-                    if (objects.isEmpty() || objects.size() < LIMIT) {
-                        listView.removeFooterView(btnLoadMore);
-                    }
-                    for (int i = 0; i < objects.size(); i++) {
-                        ParseObject object = objects.get(i);
-                        opList.add(opinionFromParseObject(object));
-                    }
-                    listView.removeHeaderView(header);
-                    header = createHeader(null);
-                    listView.addHeaderView(header);
-                    mainAdapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
+                    new WorkRefresh(objects).execute();
                 }
             }
         });
     }
+    private class WorkRefresh extends AsyncTask<Void, Void, Void> {
+        private List<ParseObject> objects;
+        public WorkRefresh(List<ParseObject> ob) {
+            this.objects = ob;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < objects.size(); i++) {
+                ParseObject object = objects.get(i);
+                opList.add(opinionFromParseObject(object));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void args) {
+            if (objects.isEmpty() || objects.size() < LIMIT) {
+                listView.removeFooterView(btnLoadMore);
+            }
+            mainAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
