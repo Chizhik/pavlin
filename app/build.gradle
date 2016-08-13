@@ -8,8 +8,8 @@ android {
         applicationId "com.n17r_fizmat.kzqrs"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 8
-        versionName "2.5"
+        versionCode 9
+        versionName "2.6"
     }
     buildTypes {
         release {
