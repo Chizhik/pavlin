@@ -40,7 +40,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
-    private final static int LIMIT = 2;
+    private final static int LIMIT = 7;
     private OpinionAdapter mainAdapter;
     private Context context;
     private List<Opinion> opList;

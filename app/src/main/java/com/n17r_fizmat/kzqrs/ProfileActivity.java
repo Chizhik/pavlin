@@ -35,7 +35,7 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
     private OpinionAdapter mainAdapter;
-    private final static int LIMIT = 2;
+    private final static int LIMIT = 7;
     private Date lastDate;
     private Button btnLoadMore;
     private List<Opinion> opList;

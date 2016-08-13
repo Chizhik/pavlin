@@ -194,7 +194,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 Bitmap selectedBitmap = extras.getParcelable("data");
                 // Set The Bitmap Data To ImageView
                 bm_small = Bitmap.createScaledBitmap(selectedBitmap, 100, 100, false);
-                bm = Bitmap.createScaledBitmap(selectedBitmap, 350, 350, false);
+                bm = Bitmap.createScaledBitmap(selectedBitmap, 400, 400, false);
                 final ProgressDialog pd = new ProgressDialog(this);
                 pd.setTitle("Загрузка картинки");
                 pd.setMessage("Пожалуйста подождите");
